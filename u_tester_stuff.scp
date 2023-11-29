@@ -1,0 +1,548 @@
+[DEFNAME tester_box]
+resources_amt             300
+resources_reagents_1      i_reag_black_pearl,i_reag_blood_moss,i_reag_garlic,i_reag_ginseng,i_reag_mandrake_root,i_reag_nightshade,i_reag_sulfur_ash,i_reag_spider_silk
+resources_reagents_2      i_reag_blood_vial,i_reag_blood_spawn,i_reag_blackmoor,i_reag_batwing,i_reag_eye_of_newt,i_reag_obsidian,i_reag_daemon_bone,i_reag_brimstone,i_reag_bone,i_reag_pig_iron,i_reag_fertile_dirt,i_reag_executioners_cap,i_reag_dragon_blood,i_reag_wyrm_heart,i_reag_dead_wood,i_reag_grave_dust,i_reag_nox_crystal,i_reag_pumice
+resources_log             i_log,i_log_oak,i_log_ash,i_log_yew,i_log_bloodwood,i_log_heartwood,i_log_frostwood
+resources_board           i_board,i_board_oak,i_board_ash,i_board_yew,i_board_bloodwood,i_board_heartwood,i_board_frostwood
+resources_ore             i_ore_iron,i_ore_copper,i_ore_silver,i_ore_gold,i_ore_shadow,i_ore_bloodrock,i_ore_blackrock,i_ore_mytheril,i_ore_scorpion,i_ore_evilspirit,i_ore_earthspirit,i_ore_mystic,i_ore_moon,i_ore_titanium,i_ore_demonskin,i_ore_angelskin,i_ore_frostrock,i_ore_elfic,i_ore_star
+resources_ingot           i_ingot_iron,i_ingot_copper,i_ingot_silver,i_ingot_gold,i_ingot_shadow,i_ingot_bloodrock,i_ingot_blackrock,i_ingot_mytheril,i_ingot_scorpion,i_ingot_evilspirit,i_ingot_earthspirit,i_ingot_mystic,i_ingot_moon,i_ingot_titanium,i_ingot_demonskin,i_ingot_angelskin,i_ingot_frostrock,i_ingot_elfic,i_ingot_star,i_ingot_bronze,i_ingot_verite,i_ingot_valorite
+resources_hide            i_hide,i_hide_spined,i_hide_frost,i_hide_stygian,i_hide_horned,i_hide_ophidian,i_hide_barbed,i_hide_daemon,i_hide_dragon
+resources_cooking         i_unbaked_quiche,i_unbaked_pie_meat,i_unbaked_pie_fruit,i_unbaked_peach_cobbler,i_unbaked_pie_apple,i_unbaked_pie_pumpkin,i_pizza,i_cake_mix,i_cookie_mix,i_bird_raw,i_chicken_leg_raw,i_lamb_leg_raw,i_fish_cut_raw,i_eggs_fresh,i_flour_sack,i_dough,i_dough_sweet
+resources_fishing         i_fish_big_1,i_fish_skara_crownfish,i_fish_minoc_blue,i_fish_brit_crown,i_fish_nujelm_honey,i_fish_buccaneer_spotted,i_fish_magincia_pomfret,i_fish_cove,i_fish_brit_blue_tang,i_fish_vesper_trout,i_fish_vesper_reef_tiger,i_fish_trinsic_crab,i_fish_ocllo_trout,i_fish_crab_red,i_fish_red_trout,i_fish_lobster,i_fish_lobster_felucca,i_fish_crab,i_fish_salmon,i_fish_barracuda,i_fish_sword,i_fish_mahimahi,i_fish_grouper,i_fish_dragon
+tool_amt                  5
+tools_1                   i_mortar_pestle,i_hammer_smith,i_saw,i_dagger,i_fry_pan,i_pickaxe,i_knife_skinning,i_tinker_tools,i_hatchet,i_sewing_kit,i_fishing_pole,i_rune_marker
+tools_2                   i_mallet_and_chisel,i_imbuing_tool_0,i_imbuing_tool_1,i_imbuing_tool_2,i_blow_pipe,i_ttm_l1,i_ttm_l2,i_ttm_l3,i_ttm_l4,i_ttm_l5     
+resources_1               i_bottle_empty,i_bandage,i_lockpick,i_arrow,i_xbolt,i_fukiya_dartx,i_scroll_blank
+resources_2               i_bullet,i_ancient_resin,i_tribal_berry,i_fish_cut_0,i_fish_cut_1,i_fish_cut_2
+
+[PLEVEL 2]
+tester
+
+[FUNCTION tester]
+src.dialogclose d_spheretester
+sdialog d_spheretester
+
+[TEMPLATE tester_box]
+NAME=Tester Box
+CATEGORY=Custom
+SUBSECTION=Newbie
+DESCRIPTION=Tester Box
+CONTAINER=i_box_brass
+ITEM=i_gold,60000
+CONTP=30,50
+ITEM=i_tester_bag_blacksmithing
+CONTP=45,50
+ITEM=i_tester_bag_tailoring
+CONTP=60,50
+ITEM=i_tester_backpack_cooking
+CONTP=75,50
+ITEM=i_tester_backpack_tools_1
+CONTP=90,50
+ITEM=i_tester_backpack_tools_2
+CONTP=105,50
+ITEM=i_tester_crate_fishing
+CONTP=130,50
+
+ITEM=i_tester_backpack_reagents_1
+CONTP=30,110
+ITEM=i_tester_backpack_reagents_2
+CONTP=45,110
+ITEM=i_tester_backpack_ore
+CONTP=60,110
+ITEM=i_tester_backpack_ingot
+CONTP=75,110
+ITEM=i_tester_backpack_wood
+CONTP=90,110
+ITEM=i_tester_backpack_resources_1
+CONTP=105,110
+ITEM=i_tester_backpack_resources_2
+CONTP=120,110
+// ***********************
+// Resources
+[ITEMDEF i_tester_crate_fishing]
+DEFNAME=i_tester_crate_fishing
+ID=i_crate_lg
+NAME=Fishing
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Fishing
+ON=@Create
+    color=096
+    f_tester_add_fishing
+
+[FUNCTION f_tester_add_fishing]
+args=<def.resources_fishing>
+local.x=10
+local.y=20
+for 0 <eval <GetArgCount <args>>-1>
+serv.newitem=<argv[<local._for>]>,25,<uid>
+new.contp=<local.x>,<local.y>
+local.x += 25
+if <local.x> >= 180
+    local.x=10
+    local.y += 30
+endif
+endfor
+
+[ITEMDEF i_tester_backpack_cooking]
+DEFNAME=i_tester_backpack_cooking
+ID=i_backpack
+NAME=Cooking
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Cooking
+ON=@Create
+    color=016
+    f_tester_add_cooking
+
+[FUNCTION f_tester_add_cooking]
+args=<def.resources_cooking>
+local.x=50
+local.y=60
+for 0 <eval <GetArgCount <args>>-1>
+serv.newitem=<argv[<local._for>]>,25,<uid>
+new.contp=<local.x>,<local.y>
+local.x += 15
+if <local.x> >= 150
+    local.x=50
+    local.y += 30
+endif
+endfor
+
+[ITEMDEF i_tester_backpack_reagents_1]
+DEFNAME=i_tester_backpack_reagents_1
+ID=i_backpack
+NAME=Reagents
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Reagents 1
+ON=@Create
+    color=025
+    f_tester_add_reagents_1
+
+[FUNCTION f_tester_add_reagents_1]
+args=<def.resources_reagents_1>
+local.x=50
+local.y=60
+for 0 <eval <GetArgCount <args>>-1>
+serv.newitem=<argv[<local._for>]>,<def.resources_amt>,<uid>
+new.contp=<local.x>,<local.y>
+local.x += 30
+if <local.x> >= 150
+    local.x=50
+    local.y += 40
+endif
+endfor
+
+[ITEMDEF i_tester_backpack_reagents_2]
+DEFNAME=i_tester_backpack_reagents_2
+ID=i_backpack
+NAME=Reagents 2
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Reagents 2
+ON=@Create
+    color=06
+    f_tester_add_reagents_2
+
+[FUNCTION f_tester_add_reagents_2]
+args=<def.resources_reagents_2>
+local.x=50
+local.y=60
+for 0 <eval <GetArgCount <args>>-1>
+serv.newitem=<argv[<local._for>]>,<def.resources_amt>,<uid>
+new.contp=<local.x>,<local.y>
+local.x += 20
+if <local.x> >= 150
+    local.x=50
+    local.y += 20
+endif
+endfor
+
+[ITEMDEF i_tester_backpack_ore]
+DEFNAME=i_tester_backpack_ore
+ID=i_backpack
+NAME=Ores
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Ore
+ON=@Create
+    color=0393
+    f_tester_add_ore
+
+[FUNCTION f_tester_add_ore]
+args=<def.resources_ore>
+local.x=50
+local.y=60
+for 0 <eval <GetArgCount <args>>-1>
+serv.newitem=<argv[<local._for>]>,<def.resources_amt>,<uid>
+new.contp=<local.x>,<local.y>
+local.x += 15
+if <local.x> >= 150
+    local.x=50
+    local.y += 30
+endif
+endfor
+
+[ITEMDEF i_tester_backpack_ingot]
+DEFNAME=i_tester_backpack_ingot
+ID=i_backpack
+NAME=Ingots
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Ingot
+ON=@Create
+    color=03c7
+    f_tester_add_ingot
+
+[FUNCTION f_tester_add_ingot]
+args=<def.resources_ingot>
+local.x=50
+local.y=60
+for 0 <eval <GetArgCount <args>>-1>
+serv.newitem=<argv[<local._for>]>,<def.resources_amt>,<uid>
+new.contp=<local.x>,<local.y>
+local.x += 10
+if <local.x> >= 150
+    local.x=50
+    local.y += 20
+endif
+endfor
+
+[ITEMDEF i_tester_backpack_wood]
+DEFNAME=i_tester_backpack_wood
+ID=i_backpack
+NAME=Wood
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Wood
+ON=@Create
+    color=0f8
+    f_tester_add_wood
+
+[FUNCTION f_tester_add_wood]
+args=<def.resources_log>
+local.x=50
+local.y=60
+for 0 <eval <GetArgCount <args>>-1>
+serv.newitem=<argv[<local._for>]>,<def.resources_amt>,<uid>
+new.contp=<local.x>,<local.y>
+local.x += 10
+if <local.x> >= 150
+    local.x=50
+    local.y += 20
+endif
+endfor
+
+args=<def.resources_board>
+local.x=50
+local.y=90
+for 0 <eval <GetArgCount <args>>-1>
+serv.newitem=<argv[<local._for>]>,<def.resources_amt>,<uid>
+new.contp=<local.x>,<local.y>
+local.x += 10
+if <local.x> >= 150
+    local.x=50
+    local.y += 20
+endif
+endfor
+
+[ITEMDEF i_tester_backpack_resources_1]
+DEFNAME=i_tester_backpack_resources_1
+ID=i_backpack
+NAME=Resources
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Resources 1
+ON=@Create
+    color=075
+    f_tester_add_resources_1
+
+[FUNCTION f_tester_add_resources_1]
+args=<def.resources_1>
+local.x=50
+local.y=60
+for 0 <eval <GetArgCount <args>>-1>
+serv.newitem=<argv[<local._for>]>,<def.resources_amt>,<uid>
+new.contp=<local.x>,<local.y>
+local.x += 20
+if <local.x> >= 150
+    local.x=50
+    local.y += 40
+endif
+endfor
+
+[ITEMDEF i_tester_backpack_resources_2]
+DEFNAME=i_tester_backpack_resources_2
+ID=i_backpack
+NAME=Resources
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Resources 2
+ON=@Create
+    color=080
+    f_tester_add_resources_2
+
+[FUNCTION f_tester_add_resources_2]
+args=<def.resources_2>
+local.x=50
+local.y=60
+for 0 <eval <GetArgCount <args>>-1>
+serv.newitem=<argv[<local._for>]>,<def.resources_amt>,<uid>
+new.contp=<local.x>,<local.y>
+local.x += 20
+if <local.x> >= 150
+    local.x=50
+    local.y += 40
+endif
+endfor
+// ********************************
+// Tools
+[ITEMDEF i_tester_backpack_tools_1]
+DEFNAME=i_tester_backpack_tools_1
+ID=i_backpack
+NAME=Tools
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Tools 1
+ON=@Create
+    f_tester_add_tools_1
+
+[FUNCTION f_tester_add_tools_1]
+args=<def.tools_1>
+local.x=50
+local.y=50
+for 0 <eval <GetArgCount <args>>-1>
+while <local.a> < <def.tool_amt>
+serv.newitem=<argv[<local._for>]>,1,<uid>
+new.contp=<local.x>,<local.y>
+local.a ++
+endwhile
+local.a=
+local.x += 20
+if <local.x> >= 150
+    local.x=50
+    local.y += 40
+endif
+endfor
+serv.newitem=i_spellbook,1,<uid>    // full spellbook
+new.contp=50,120
+new.more1=0ffffffff
+new.more2=0ffffffff
+serv.newitem=i_runebook,1,<uid>
+new.contp=140,120
+
+[ITEMDEF i_tester_backpack_tools_2]
+DEFNAME=i_tester_backpack_tools_2
+ID=i_backpack
+NAME=Tools 2
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Tools 2
+ON=@Create
+    f_tester_add_tools_2
+
+[FUNCTION f_tester_add_tools_2]
+args=<def.tools_2>
+local.x=50
+local.y=50
+for 0 <eval <GetArgCount <args>>-1>
+while <local.a> < <def.tool_amt>
+serv.newitem=<argv[<local._for>]>,1,<uid>
+new.contp=<local.x>,<local.y>
+local.a ++
+endwhile
+local.a=
+local.x += 20
+if <local.x> >= 150
+    local.x=50
+    local.y += 40
+endif
+endfor
+
+[ITEMDEF i_tester_bag_blacksmithing]
+DEFNAME=i_tester_bag_blacksmithing
+ID=i_bag
+NAME=Blacksmithing Bag
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Blacksmithing
+ON=@Create
+    color=0f8
+    f_tester_add_blacksmithing
+
+[FUNCTION f_tester_add_blacksmithing]
+serv.newitem=i_anvil,1,<uid>
+new.contp=30,40
+serv.newitem=i_forge,1,<uid>
+new.contp=65,50
+
+[ITEMDEF i_tester_bag_tailoring]
+DEFNAME=i_tester_bag_tailoring
+ID=i_bag
+NAME=Tailoring Bag
+TYPE=t_container
+CATEGORY=Custom
+SUBSECTION=Tester
+DESCRIPTION=Tailoring
+ON=@Create
+    color=0f8
+    f_tester_add_tailoring
+
+[FUNCTION f_tester_add_tailoring]
+serv.newitem=i_cloth,<def.resources_amt>,<uid>
+new.contp=30,65
+serv.newitem=i_thread,<def.resources_amt>,<uid>
+new.contp=70,65
+serv.newitem=i_cotton,<def.resources_amt>,<uid>
+new.contp=30,115
+serv.newitem=i_deed_loom,1,<uid>
+new.contp=60,40
+serv.newitem=i_dyes,1,<uid>
+new.contp=50,65
+serv.newitem=i_dye_tub,1,<uid>
+new.contp=50,90
+serv.newitem=i_spinning_wheel,1,<uid>
+new.contp=100,100
+
+[Dialog d_SphereTester]
+50,50
+
+Page 0 // Basic layout
+Resizepic 0 0 5054 652 507
+Gumppictiled 5 5 640 497 2604
+Gumppictiled 5 5 640 25 2624
+Gumppictiled 5 35 640 467 2624
+Checkertrans 5 5 640 497
+DText 10 7 0c1 SphereServer <src.Version> Tester Panel (<Serv.Servname>)
+Button 615 5 4017 4018 1 0 0
+
+Page 1
+local.x=10
+local.y=50
+DText <local.x> <local.y> 0c1 StatTotal
+DText <eval <local.x>+68> <local.y> 0480 <src.isstattotal>
+local.y += 20
+DText <local.x> <local.y> 0c1 Stat Max
+DText <eval <local.x>+68> <local.y> 998 <src.skillclass.STATSUM>
+local.y += 40
+DText <local.x> <local.y> 0c1 Strenght
+DText <eval <local.x>+60> <local.y> 998 (Max <src.skillclass.str>)
+local.y += 25
+gumppictiled <eval <local.x>+52> <local.y> 58 21 87
+Checkertrans <eval <local.x>+54> <eval <local.y>+2> 54 17
+DTextenTrylimited <eval <local.x>+62> <local.y> 40 15 0480 101 3 <src.str>
+Button <eval <local.x>+20> <local.y> 4005 4007 1 0 101
+local.y += 30
+DText <local.x> <local.y> 0c1 Dexterity
+DText <eval <local.x>+60> <local.y> 998 (Max <src.skillclass.dex>)
+local.y += 25
+gumppictiled <eval <local.x>+52> <local.y> 58 21 87
+Checkertrans <eval <local.x>+54> <eval <local.y>+2> 54 17
+DTextenTrylimited <eval <local.x>+62> <local.y> 40 15 0480 102 3 <src.dex>
+Button <eval <local.x>+20> <local.y> 4005 4007 1 0 102
+local.y += 30
+DText <local.x> <local.y> 0c1 Intellect
+DText <eval <local.x>+60> <local.y> 998 (Max <src.skillclass.int>)
+local.y += 25
+gumppictiled <eval <local.x>+52> <local.y> 58 21 87
+Checkertrans <eval <local.x>+54> <eval <local.y>+2> 54 17
+DTextenTrylimited <eval <local.x>+62> <local.y> 40 15 0480 103 3 <src.int>
+Button <eval <local.x>+20> <local.y> 4005 4007 1 0 103
+local.y += 50
+DText <local.x> <local.y> 0c1 Skill Total
+DText <eval <local.x>+68> <local.y> 0480 <Fval <SkillTotal>>
+local.y += 20
+DText <local.x> <local.y> 0c1 Skill Max
+DText <eval <local.x>+68> <local.y> 998 <Fval <src.skillclass.Skillsum>>
+
+dorigin 160 16
+For x 0 57
+    if !(<local.x>==50 || <local.x>==52 || <local.x>==53 || <local.x>==54 || <local.x>==55 || <local.x>==57) // Focus,Bushido,Ninjitsu,Spellweaving,Mysticism,Throwing
+	if (<Local.x>==18) 
+		dorigin 324 16
+	Elif (<Local.x>==36)
+		dorigin 488 16
+	Endif
+	DText +0 *23 0480 <serv.skill.<Local.x>.key>
+	gumppictiled +104 +0 50 21 87
+	Checkertrans +106 +2 46 17
+	DTextenTrylimited +112 +0 40 15 0480 <dLocal.x> 5 <fval <<serv.skill.<dLocal.x>.key>>>
+    Button +86 +3 1209 1210 1 0 <eval <dLocal.x>+1>
+    endif
+Endfor
+
+[Dialog d_SphereTester button]
+On=0
+    src.dialogclose d_SphereTester
+    return 1
+on=1 58
+    src.dialogclose d_SphereTester
+    if <isempty <Argtxt[<eval <argn1>-1>]>> || !<isnum <Argtxt[<eval <argn1>-1>]>> || <Argtxt[<eval <argn1>-1>]> < 0
+        src.sysmessage @,,1 Invalid Number.
+        Dialog d_SphereTester
+        return 1
+    elif <fval <Argtxt[<eval <argn1>-1>]>> > <src.<serv.skill.<eval <argn1>-1>.key>>
+        if <eval (<Argtxt[<eval <argn1>-1>]>-<src.<serv.skill.<eval <argn1>-1>.key>>)+<src.SkillTotal>> > <src.skillclass.Skillsum>
+            src.sysmessage @,,1 SkillCap Reached.
+            Dialog d_SphereTester
+            return 1
+        endif
+    elif <src.<serv.skill.<eval <argn1>-1>.key>> > <src.skillclass.<serv.skill.<eval <argn1>-1>.key>>
+		src.sysmessage @,,1 You can't raise <serv.skill.<eval <argn1>-1>.key> any higher than <src.skillclass.<serv.skill.<eval <argn1>-1>.key>>.
+	    Dialog d_SphereTester
+	    return 1
+    endif   
+    src.<serv.skill.<eval <argn1>-1>.key>=<Argtxt[<eval <argn1>-1>]>
+    // src.sysmessage @,,1 Your <serv.skill.<eval <argn1>-1>.key> is now <fval <Argtxt[<eval <argn1>-1>]>>.
+    Dialog d_SphereTester
+    return 1
+
+On=101 103
+    src.dialogclose d_SphereTester
+    if <isempty <Argtxt[<argn1>]>> || !<isnum <Argtxt[<argn1>]>> || <Argtxt[<argn1>]> < 1
+        src.sysmessage @,,1 Invalid Number.
+        Dialog d_SphereTester
+        return 1
+    endif
+    if <argn1>==101
+        local.stat=Str
+        local.s=<Argtxt[<argn1>]>+<src.int>+<src.dex>
+    elif <argn1>==102
+        local.stat=Dex
+        local.s=<Argtxt[<argn1>]>+<src.int>+<src.str>
+    elif <argn1>==103
+        local.stat=Int
+        local.s=<Argtxt[<argn1>]>+<src.str>+<src.dex>
+    endif
+    if <Argtxt[<argn1>]> > <src.skillclass.<local.stat>>
+        src.sysmessage @,,1 Invalid Number (Max <src.skillclass.<local.stat>>).
+        Dialog d_SphereTester
+        return 1
+    elif <Argtxt[<argn1>]> > <src.<local.stat>>
+        if <local.s> > <src.skillclass.statsum>
+            src.sysmessage @<def.tcolor_red> Max Stats Reached.
+            Dialog d_SphereTester
+            return 1
+        endif
+    endif
+    src.<local.stat>=<Argtxt[<argn1>]>
+    // src.sysmessage @,,1 Your <local.stat> is now <Argtxt[<argn1>]>.
+    Dialog d_SphereTester
+
+[FUNCTION GetArgCount]
+return <argv>
+
+[EOF]
