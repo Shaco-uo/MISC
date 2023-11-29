@@ -1,4 +1,4 @@
-[DEFNAME tester_box]
+[DEFNAME tester_box]    // add on f_onchar_create
 resources_amt             300
 resources_reagents_1      i_reag_black_pearl,i_reag_blood_moss,i_reag_garlic,i_reag_ginseng,i_reag_mandrake_root,i_reag_nightshade,i_reag_sulfur_ash,i_reag_spider_silk
 resources_reagents_2      i_reag_blood_vial,i_reag_blood_spawn,i_reag_blackmoor,i_reag_batwing,i_reag_eye_of_newt,i_reag_obsidian,i_reag_daemon_bone,i_reag_brimstone,i_reag_bone,i_reag_pig_iron,i_reag_fertile_dirt,i_reag_executioners_cap,i_reag_dragon_blood,i_reag_wyrm_heart,i_reag_dead_wood,i_reag_grave_dust,i_reag_nox_crystal,i_reag_pumice
