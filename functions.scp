@@ -1,4 +1,28 @@
 [FUNCTION GetArgCount]
 return <argv>
 
+[FUNCTION f_set_info]	// usage: f_set_info <args>
+local.info=<args>
+if <isempty <tag.info>>
+	tag.info=<local.info>
+else
+	tag.info=<tag.info>, <local.info>
+endif
+
+[FUNCTION f_numformat]
+local.c=<eval strlen(<args>)>
+for 1 <eval <local.c>-0>
+    if (<local._for> == 4) || (<local._for> == 7) || (<local._for> == 10) || (<local._for> == 13) || (<local._for> == 16)
+        local.r=".<local.r>"
+    endif
+    if (<local._for> == 1)
+        local.r="<strsub <eval (<local.c>-<eval <local._for>+0>)> 1 <args>>"
+    else
+        local.r="<strsub <eval (<local.c>-<eval <local._for>+0>)> 1 <args>><local.r>"
+    endif
+endfor
+return <local.r>
+
+
+
 [EOF]
