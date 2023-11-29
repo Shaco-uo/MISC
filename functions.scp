@@ -1,15 +1,13 @@
-[FUNCTION GetArgCount]
+// SYSTEM
+[FUNCTION getargcount]
 return <argv>
 
-[FUNCTION f_set_info]	// usage: f_set_info <args>
-local.info=<args>
-if <isempty <tag.info>>
-	tag.info=<local.info>
-else
-	tag.info=<tag.info>, <local.info>
-endif
+[FUNCTION getargv]
+local.t = <strarg <args>>
+args = <streat <args>>
+return <argv[<local.t>]>
 
-[FUNCTION f_numformat]
+[FUNCTION f_numformat]	// usage: <f_numformat <1000000>> --> 1.000.000
 local.c=<eval strlen(<args>)>
 for 1 <eval <local.c>-0>
     if (<local._for> == 4) || (<local._for> == 7) || (<local._for> == 10) || (<local._for> == 13) || (<local._for> == 16)
@@ -22,6 +20,15 @@ for 1 <eval <local.c>-0>
     endif
 endfor
 return <local.r>
+
+// ITEMS
+[FUNCTION f_set_info]	// usage: f_set_info <args>
+local.info=<args>
+if <isempty <tag.info>>
+	tag.info=<local.info>
+else
+	tag.info=<tag.info>, <local.info>
+endif
 
 
 
