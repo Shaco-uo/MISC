@@ -1,0 +1,4 @@
+[FUNCTION GetArgCount]
+return <argv>
+
+[EOF]
