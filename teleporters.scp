@@ -1,0 +1,76 @@
+[TYPEDEF t_teleporter_skillreq]
+ON=@Create
+	tag.nameloc.hue=ffc600	// lyellow
+	attr=010
+	timer=-1
+ON=@Dclick
+	if <src.isgm>
+		dialog d_teleporter_skill
+		return 1
+	endif
+	if <src.<tag.skill_req>> < <src.<tag0.skill_amt>>
+		src.sysmessage @,,1 You need at least <tag0.skill_amt> <tag.skill_req> to use this teleporter.
+	endif
+	return 1
+ON=@Step
+	if !<src.isplayer>
+		return 1
+	endif
+	if <src.<tag.skill_req>> >= <tag0.skill_amt> && !<src.findid.i_mem_teleporter_effect.isvalid>
+		src.newitem=i_mem_teleporter_effect
+		if !<isempty <tag.effect>>
+			new.tag.effect=<tag.effect>
+		endif
+		new.morep=<morep>
+		new.equip <src>		
+	else
+		return 0
+	endif
+
+[ITEMDEF i_mem_teleporter_effect]
+ID=i_memory
+NAME=tele effect
+TYPE=t_eq_script
+ON=@Equip
+	if !<isempty <tag.effect>>
+		src.effect=<tag.effect>
+	endif
+	src.tag.nomovetill=<eval <serv.time>+100>
+	timer=1
+ON=@Timer
+	topobj.go <morep>
+	topobj.tag.nomovetill=
+	remove
+	return 1
+
+[ITEMDEF i_teleporter_wind]
+DEFNAME=i_teleporter_wind
+ID=0307f	// arcane circle center
+NAME=Wind
+TYPE=t_script
+TEVENTS=t_teleporter_skillreq
+tag.skill_req=Magery
+tag.skill_amt=80.0
+tag.effect=3,i_fx_sparkle,10,16,10
+CATEGORY=Custom  
+SUBSECTION=Teleporter
+DESCRIPTION=Wind
+ON=@Create
+	morep=5223,191,5,0	// wind city
+// *********************************
+[ITEMDEF i_teleporter_skill]
+DEFNAME=i_teleporter_skill
+ID=i_rune_alchem_3
+NAME=Teleporter
+TYPE=t_script
+TEVENTS=t_teleporter_skillreq
+CATEGORY=Custom  
+SUBSECTION=Teleporter
+DESCRIPTION=Skillreq
+ON=@Create
+	tag.skill_req=Stealth
+	tag.skill_amt=30.0
+	tag.effect=3,i_fx_sparkle,10,16,10
+	morep=1,1,1,0
+
+[EOF]
