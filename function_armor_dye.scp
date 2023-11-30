@@ -92,8 +92,9 @@ ON=@Create
 	ITEMNEWBIE=i_Shield_Chaos
 	ITEMNEWBIE={ i_sword_viking 1 i_kryss 1 i_mace_war 1 }
 	ITEMNEWBIE=i_cape
+    ITEMNEWBIE=i_apron_half
 	ITEMNEWBIE=i_dye_armor
-	COLOR=055
+	COLOR=colors_all
 	ITEMNEWBIE=i_dye_clothing
 	COLOR=026
 
