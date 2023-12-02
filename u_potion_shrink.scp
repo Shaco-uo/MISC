@@ -73,6 +73,12 @@ ON=@Dclick
         src.sysmessage @,,1 You can't reach <name>.
         return 1
     endif
+	local.f = <eval <src.maxfollower>-<src.curfollower>>
+	local.slots=<serv.chardef.<more2>.followerslots>
+	if <local.f> < <local.slots> // avoid to unshrink more pets than free follower slots
+		src.sysmessage @,,1 You can't have more followers.
+		return 1
+	endif
 	serv.newnpc=<more2>
 	new.name=<name>
 	if !<isempty <tag.shrink>>
