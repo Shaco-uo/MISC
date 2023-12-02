@@ -1,0 +1,191 @@
+[TYPEDEF t_potion_keg]
+ON=@ClientTooltip
+	if <more1>
+		ADDCLILOC 1065572,<def.bfont_lyellow><serv.itemdef.<more1>.name><def.bfont_white>
+	else
+		ADDCLILOC 1065572,Empty
+	endif
+	ADDCLILOC 1065591,<qval (<more2>==0)?0:<dmore2>>,<eval <tag.maxcharges>>
+ON=@Dclick
+    if !<canseelos>
+        src.sysmessage @,,1 You can't reach <name>.
+        return 1
+    endif
+    target
+    return 1
+ON=@Targon_Item
+	if <src.action> != -1
+		src.sysmessage @,,1 You can't use this yet!
+		return 1
+	endif
+
+	ref1=<argo>
+	if <ref1.topobj>!=<src> || <ref1.isinbank>
+		src.sysmessage @,,1 You can't reach <ref1.name>.
+		return 1
+	endif
+	// FILL BOTTLE
+	if <ref1.baseid>==i_bottle_empty
+		if <more2>==0
+			src.sysmessage @,,1 No potions to add.
+			return 1
+		endif
+		if <ref1.amount> < <dmore2>
+			src.sysmessage @,,1 You fill <ref1.amount> empty <qval (<ref1.amount>==1)? bottle:bottles> with <serv.itemdef.<more1>.name>.
+			src.newitem=<more1>,<ref1.amount>
+			new.bounce <src>
+			more2 -= <ref1.amount>
+			ref1.remove		// remove bottles
+			if <more2>==0	//clear potion id & NAME
+				color=<tag.empty_color>
+				more1=
+			endif
+		else
+			src.sysmessage @,,1 You fill <dmore2> empty <qval (<ref1.amount>==1)? bottle:bottles> with <serv.itemdef.<more1>.name>.
+			src.consume <dmore2> i_bottle_empty
+			src.newitem=<more1>,<dmore2>
+			new.bounce <src>
+			color=<tag.empty_color>
+			more1=
+			more2=
+		endif
+		sound=snd_z_end_liquid
+		resendtooltip 1,0
+		return 1
+	endif
+
+	// ADD POTION
+	if <ref1.type> != t_potion
+		src.sysmessage @,,1 Invalid Target.
+		return 1
+	elif <more1> && <more1>!=<ref1.baseid>
+		src.sysmessage @,,1 You cannot mix potion types. 
+		return 1
+	elif <dmore2> == <eval <tag.maxcharges>> // max 100 potion
+		src.sysmessage @,,1 The keg is full.
+		return 1
+	endif  
+	if <more2>==0				// Empty keg
+		more1=<ref1.baseid>
+		color=<ref1.color>
+	endif
+	
+	local.diff=<eval <tag.maxcharges>>-<dmore2>	// room left
+	if <ref1.amount> > <local.diff>
+		src.sysmessage @,,1 You add <local.diff> <ref1.name> to <name>.
+		src.consume <local.diff> <ref1.baseid>
+		src.newitem i_bottle_empty,<local.diff>
+		new.bounce <src>
+		more2 += <local.diff>
+	else
+		src.sysmessage @,,1 You add <ref1.amount> <ref1.name> to <name>.
+		src.newitem i_bottle_empty,<ref1.amount>
+		new.bounce <src>
+		more2 += <ref1.amount>
+		ref1.remove
+	endif
+	src.sound=snd_z_end_liquid
+	resendtooltip 1,0
+	return 1
+
+ON=@Targon_Char
+	return 1
+ON=@Targon_Ground
+	return 1
+ON=@Targon_Cancel
+	return 1
+
+[TYPEDEF t_keg_charge]
+ON=@Dclick
+	target
+	return 1
+ON=@Targon_Item
+	ref1=<argo>
+	if <topobj>!=<src> || <isinbank>
+		src.sysmessage @,,1 <name> must be in your backpack.
+		return 1
+	endif
+	if <ref1.topobj>!=<src> || <ref1.isinbank>
+		src.sysmessage @,,1 <ref1.name> must be in your backpack.
+		return 1
+	endif
+	if !<ref1.istevent.t_potion_keg>
+		src.sysmessage @,,1 Invalid target.
+		return 1
+	endif
+	if <ref1.tag0.maxcharges>==1000
+		src.sysmessage @,,1 <ref1.name> storage can't be improved any further.
+		return 1
+	endif
+	src.sound 023e
+	src.sysmessage @,,1 <ref1.name> storage has been increased by 25.
+	ref1.tag0.maxcharges += 25
+	ref1.resendtooltip 1,0
+	src.consume 1 <baseid>
+	return 1
+
+ON=@Targon_Char
+	return 1
+ON=@Targon_Cancel
+	return 1
+ON=@TargOn_Ground
+	return 1
+
+[ITEMDEF i_keg_potion]
+DEFNAME=i_keg_potion
+ID=i_keg_wood
+NAME=Potion Keg
+TYPE=t_script
+VALUE=40
+WEIGHT=20.0
+RESOURCES=10 i_board,1 i_barrel_tap,1 i_barrel_hoops
+SKILLMAKE=TINKERING 65.0,t_tinker_tools
+TEVENTS=t_potion_keg
+tag.itemlevel=0
+tag.empty_color=0
+CATEGORY=Custom
+SUBSECTION=Tinkering Items
+DESCRIPTION=Potion Keg (Empty)
+ON=@Create
+   MaxAmount=1
+   tag.maxcharges=150
+   color=<tag.empty_color>
+
+[ITEMDEF i_container_potion]
+DEFNAME=i_container_potion
+ID=i_interspatial_container
+NAME=Potion Container
+TYPE=t_script
+VALUE=40
+WEIGHT=20.0
+RESOURCES=50 i_ingot_frostrock,30 i_core_giant_2
+SKILLMAKE=TINKERING 105.0,t_tinker_tools
+TEVENTS=t_potion_keg
+tag.itemlevel=1
+tag.empty_color=02b1
+CATEGORY=Custom
+SUBSECTION=Tinkering Items
+DESCRIPTION=Potion Container
+ON=@Create
+   tag.maxcharges=300
+   color=<tag.empty_color>
+
+// Keg Charges +25
+[ITEMDEF i_keg_potion_charge]
+DEFNAME=i_keg_potion_charge
+ID=0592f
+NAME=Potion Keg Charge%s
+TYPE=t_script
+WEIGHT=1.0
+VALUE=10
+RESOURCES=10 i_tribal_berry,1 i_ancient_resin
+SKILLMAKE=TINKERING 100.0,t_tinker_tools
+TEVENTS=t_keg_charge
+tag.itemlevel=0
+CATEGORY=Custom
+SUBSECTION=Tinkering Items
+DESCRIPTION=Potion Keg Charge
+ON=@Create
+	color=0b97
+
+[EOF]

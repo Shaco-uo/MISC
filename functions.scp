@@ -22,6 +22,14 @@ endfor
 return <local.r>
 
 // ITEMS
+[FUNCTION isinbank]
+ref1=<uid>
+forcont <src.findlayer.29> 150
+if <uid>==<ref1>
+	return 1
+endif
+endfor
+
 [FUNCTION f_set_info]	// usage: f_set_info <args>
 local.info=<args>
 if <isempty <tag.info>>

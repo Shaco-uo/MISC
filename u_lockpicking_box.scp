@@ -1,0 +1,52 @@
+[ITEMDEF i_lockpicking_box_1]
+DEFNAME=i_lockpicking_box_1
+NAME=Apprentice Lockpicking Box
+ID=i_box_wood
+TYPE=t_container
+VALUE=20
+TEVENTS=t_lockpicking_chest
+tag.itemlevel=0
+CATEGORY=Custom
+SUBSECTION=Tinkering Items
+DESCRIPTION=Box Lockpicking 1
+ON=@Create
+    TYPE=t_container_locked
+    attr=attr_move_never
+    more2=50
+    color=0355
+
+[ITEMDEF i_lockpicking_box_2]
+DEFNAME=i_lockpicking_box_2
+NAME=Adept Lockpicking Box
+ID=i_box_wood
+TYPE=t_container
+VALUE=30
+TEVENTS=t_lockpicking_chest
+tag.itemlevel=1
+CATEGORY=Custom
+SUBSECTION=Tinkering Items
+DESCRIPTION=Box Lockpicking 2
+ON=@Create
+    TYPE=t_container_locked
+    attr=attr_move_never
+    more2=70
+    color=0465
+
+[ITEMDEF i_lockpicking_box_3]
+DEFNAME=i_lockpicking_box_3
+NAME=Master Lockpicking Box
+ID=i_box_wood
+TYPE=t_container
+VALUE=40
+TEVENTS=t_lockpicking_chest
+tag.itemlevel=1
+CATEGORY=Custom
+SUBSECTION=Tinkering Items
+DESCRIPTION=Box Lockpicking 3
+ON=@Create
+    TYPE=t_container_locked
+    attr=attr_move_never
+    more2=90
+    color=0275
+
+[EOF]

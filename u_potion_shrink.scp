@@ -1,0 +1,99 @@
+[ITEMDEF i_potion_Shrink]
+DEFNAME=i_potion_Shrink
+ID=i_bottle_white
+NAME=Shrink
+TYPE=t_script
+RESOURCES=12 i_reag_batwing,1 i_bottle_empty
+SKILLMAKE=ALCHEMY 100.0, t_mortar
+
+ON=@Create
+   COLOR=07ad
+
+ON=@Dclick
+	target
+	return 1
+
+ON=@Targon_Char
+	ref1=<argo>
+	if !(<ref1.isvalid> && <ref1.ischar> && <ref1.npc>)
+		src.sysmessage @,,1 Invalid target.
+		return 1
+	elif !<ref1.ismypet>
+		src.sysmessage @,,1 <ref1.name> is not your pet.
+		return 1
+	elif <ref1.distance> > 2
+		src.sysmessage @,,1 <ref1.name> is too far away.
+		return 1
+	elif <ref1.body>==c_man || <ref1.body>==c_woman || <ref1.npc>==brain_dragon || <ref1.npc>==brain_monster
+		src.sysmessage @,,1 <ref1.name> can't be shrinked.
+		return 1
+	elif <ref1.isevent.e_bonding> || <ref1.bonded>==1 || <ref1.flags>&statf_conjured || <ref1.istevent.e_pack_pet>
+		src.sysmessage @,,1 <ref1.name> can't be shrinked.
+		return 1
+	elif <ref1.food> > <ref1.maxfood>
+		src.sysmessage @,,1 <ref1.name> must be fed before shrinking.
+		return 1
+	elif <ref1.hits> < <ref1.maxhits>
+		src.sysmessage @,,1 <ref1.name> must be fully restored before shrinking.
+		return 1
+	elif <ref1.flags>&statf_poisoned
+		src.sysmessage @,,1 <ref1.name> is poisoned.
+		return 1
+	elif <ref1.flags>&statf_freeze
+		src.sysmessage @,,1 <ref1.name> is paralyzed.
+		return 1
+	endif
+	src.newitem=<ref1.icon>
+	new.tag.shrink=<ref1.color>,<ref1.str>,<ref1.maxhits>,<ref1.karma>,<ref1.kills>,<ref1.wrestling>,<ref1.tactics>,<ref1.magery>
+	new.more2=<ref1.baseid>
+	new.type=t_shrink
+	new.color=<ref1.color>
+	new.name=<ref1.name>
+	new.bounce <src>
+	src.sysmessage @,,1 <ref1.name> has been shrinked.
+	ref1.remove
+	src.consume 1 i_potion_shrink
+	src.newitem=i_bottle_empty
+	new.bounce <src>
+	return 1
+
+ON=@Targon_Item
+	return 1
+ON=@Targon_Cancel
+	return 1
+ON=@TargOn_Ground
+	return 1
+
+[TYPEDEF t_shrink]
+ON=@ClientTooltip
+	ADDCLILOC 1065562,<color>
+
+ON=@Dclick
+    if <topobj>!=<src> || <isinbank>
+        src.sysmessage @,,1 You can't reach <name>.
+        return 1
+    endif
+	serv.newnpc=<more2>
+	new.name=<name>
+	if !<isempty <tag.shrink>>
+		new.f_restore_shrink <uid>
+	endif
+	new.p=<src.p>
+	new.f_makepetof <src>
+	remove
+	return 1
+
+[FUNCTION f_restore_shrink]
+ref1=<args>
+args=<ref1.tag.shrink>	// tag.shrinked=<ref1.color>,<ref1.str>,<ref1.maxhits>,<ref1.karma>,<ref1.kills>,<ref1.wrestling>,<ref1.tactics>
+Color=<argv[0]>
+Str=<argv[1]>
+Maxhits=<argv[2]>
+Karma=<argv[3]>
+Kills=<argv[4]>
+Wrestling=<argv[5]>
+Tactics=<argv[6]>
+Magery=<argv[7]>
+Hits=<Maxhits>
+
+[EOF]
