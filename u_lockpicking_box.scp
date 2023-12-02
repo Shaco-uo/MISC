@@ -1,3 +1,28 @@
+[TYPEDEF t_lockpicking_chest]
+ON=@ClientTooltip
+	ADDCLILOC 1065572,Requires <def.bfont_yellow><fval <dmore2>*10> <def.bfont_white>Lockpicking
+	if <timer> > 1
+		ADDCLILOC 1065573,Time Left <def.bfont_yellow><f_time_left_t <timer>> <def.bfont_white>
+	endif
+ON=@Dclick //Activate the decay if chest is unlock
+   if <type>==t_container
+      timer=<R5,15>
+	  resendtooltip 1,0
+   endif
+ON=@SpellEffect
+   if <argn1>==23
+   	src.sysmessage You can not unlock this with that spell.
+   	return 1
+   endif
+ON=@Timer
+	type=t_container_locked
+	sound=snd_spell_magic_trap
+	message @,,1 Locked!
+	timer=-1
+	return 1
+ON=@Dropon_Self
+	return 1
+
 [ITEMDEF i_lockpicking_box_1]
 DEFNAME=i_lockpicking_box_1
 NAME=Apprentice Lockpicking Box
