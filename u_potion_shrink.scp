@@ -91,7 +91,7 @@ ON=@Dclick
 
 [FUNCTION f_restore_shrink]
 ref1=<args>
-args=<ref1.tag.shrink>	// tag.shrinked=<ref1.color>,<ref1.str>,<ref1.maxhits>,<ref1.karma>,<ref1.kills>,<ref1.wrestling>,<ref1.tactics>
+args=<ref1.tag.shrink>	// tag.shrinked=<ref1.color>,<ref1.str>,<ref1.maxhits>,<ref1.karma>,<ref1.kills>,<ref1.wrestling>,<ref1.tactics>,<ref1.magery>
 Color=<argv[0]>
 Str=<argv[1]>
 Maxhits=<argv[2]>
