@@ -11,7 +11,7 @@ ON=@Dclick //Activate the decay if chest is unlock
    endif
 ON=@SpellEffect
    if <argn1>==23
-   	src.sysmessage You can not unlock this with magic.
+   	src.sysmessage You cannot unlock this with magic.
    	return 1
    endif
 ON=@Timer
