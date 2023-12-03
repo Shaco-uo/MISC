@@ -5,7 +5,7 @@ for 1 24
 if (|| <local._for>==4 || <local._for>==6 || <local._for>==7 || <local._for>==10 || <local._for>==13 || <local._for>==19 || <local._for>==24)	// 3=boots
 	if <ref2.findlayer.<local._for>.isvalid>
 		ref1=<ref2.findlayer.<local._for>>
-		if <ref1>==3	// boots
+		if <local._for>==3	// boots
 			ref1.color=<local.c>
 		endif
 		if <ref1.isarmor> && <ref1.type>!=t_shield && <ref1.type>!=t_clothing
