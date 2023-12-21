@@ -8,70 +8,74 @@ if <src.isgm>
 endif
 ref2=<ref1.tag.store_owner>
 ref5=<ref1.tag.recycle_pack>	// player recycle pack
-f_gumppic_dialog 152,42,293,426
-dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><def.bfont_white><ref1.name>
-dhtmlgump 354 441 80 25 0 0 <def.div_right><def.bfont_white><def.bfont_size4>$<def.bfont_lyellow><f_numformat <ref1.tag0.gold>>
+
+local.font_title=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_title>>
+local.font_text1=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text1>>
+local.font_text2=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text2>>
+local.font_red=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_red>>
+local.h=364
+f_gumppic_dialog 152,42,294,<local.h>
+dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><local.font_title><ref1.name> <def.bfont_size4><local.font_red>Settings
+dhtmlgump 354 <eval <local.h>+16> 80 25 0 0 <def.div_right><local.font_text1><def.bfont_size4>$<local.font_title><f_numformat <ref1.tag0.gold>>
 
 PAGE 1
 local.y=90
 local.x=182
-dhtmlgump <local.x> <local.y> 220 20 0 0 <def.center><def.bfont_white>Settings
-local.y += 25
-dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_lyellow>Name
-gumppictiled <eval <local.x>+36> <local.y> 185 18 <def.store_text_bg>
+dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_text1>Name
+gumppictiled <eval <local.x>+36> <local.y> 185 18 <def.dlg_bg_<src.ctag0.dlg_bg>_text_gump>
 dtextentrylimited <eval <local.x>+40> <local.y> 175 15 0480 1 26 <ref1.name>
 button <eval <local.x>+225> <eval <local.y>+3> <def.store_small_button> 1 0 100	// RENAME
 local.y += 22
-dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_lyellow>Owner
-dhtmlgump <eval <local.x>+106> <local.y> 128 20 0 0 <def.bfont_lcyan><ref2.name>
+dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_text1>Owner
+dhtmlgump <eval <local.x>+106> <local.y> 128 20 0 0 <local.font_text2><ref2.name>
 local.y += 22
-dhtmlgump <local.x> <local.y> 100 20 0 0 <def.bfont_lyellow>Skins
-dhtmlgump <eval <local.x>+106> <local.y> 100 20 0 0 <def.bfont_lcyan><ref1.tag0.skins_used><def.bfont_gray> of <def.bfont_lcyan><tag0.max_skins>
+dhtmlgump <local.x> <local.y> 100 20 0 0 <local.font_text1>Skins
+dhtmlgump <eval <local.x>+106> <local.y> 100 20 0 0 <local.font_text2><ref1.tag0.skins_used> of <local.font_text2><tag0.max_skins>
 local.y += 22
-dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_lyellow>Max Vendors
-dhtmlgump <eval <local.x>+106> <local.y> 27 20 0 0 <def.bfont_lcyan><ref1.room.tag0.max_vendors>
-dhtmlgump <eval <local.x>+174> <local.y> 90 20 0 0 <def.bfont_gray>(<ref1.tag0.vendors> Active)
+dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_text1>Max Vendors
+dhtmlgump <eval <local.x>+106> <local.y> 27 20 0 0 <local.font_text2><ref1.room.tag0.max_vendors>
+dhtmlgump <eval <local.x>+174> <local.y> 90 20 0 0 <local.font_text1>(<ref1.tag0.vendors> Active)
 local.y += 22
-dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_lyellow>Max Lockdowns
-dhtmlgump <eval <local.x>+106> <local.y> 27 20 0 0 <def.bfont_lcyan><ref1.room.tag0.max_lockdown>
-dhtmlgump <eval <local.x>+174> <local.y> 90 20 0 0 <def.bfont_gray>(<ref1.tag0.lockdowns> Active)
+dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_text1>Max Lockdowns
+dhtmlgump <eval <local.x>+106> <local.y> 27 20 0 0 <local.font_text2><ref1.room.tag0.max_lockdown>
+dhtmlgump <eval <local.x>+174> <local.y> 90 20 0 0 <local.font_text1>(<ref1.tag0.lockdowns> Active)
 local.y += 22
-dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_lyellow>Max Secure
-dhtmlgump <eval <local.x>+106> <local.y> 27 20 0 0 <def.bfont_lcyan><ref1.room.tag0.max_secure>
-dhtmlgump <eval <local.x>+174> <local.y> 90 20 0 0 <def.bfont_gray>(<ref1.tag0.secure> Active)
+dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_text1>Max Secure
+dhtmlgump <eval <local.x>+106> <local.y> 27 20 0 0 <local.font_text2><ref1.room.tag0.max_secure>
+dhtmlgump <eval <local.x>+174> <local.y> 90 20 0 0 <local.font_text1>(<ref1.tag0.secure> Active)
 local.y += 22
-dhtmlgump <local.x> <local.y> 120 20 0 0 <def.bfont_lyellow>Max Items
-dhtmlgump <eval <local.x>+106> <local.y> 100 20 0 0 <def.bfont_lcyan><eval <ref1.room.tag0.max_vendors>*<def.store_sell_max>>
-dhtmlgump <eval <local.x>+174> <local.y> 90 20 0 0 <def.bfont_gray>(Total <f_store_total_items <ref1>>)
+dhtmlgump <local.x> <local.y> 120 20 0 0 <local.font_text1>Max Items
+dhtmlgump <eval <local.x>+106> <local.y> 100 20 0 0 <local.font_text2><eval <ref1.room.tag0.max_vendors>*<def.store_sell_max>>
+dhtmlgump <eval <local.x>+174> <local.y> 90 20 0 0 <local.font_text1>(Total <f_store_total_items <ref1>>)
 local.y += 22
 if <def0.store_vendor_tax>!=0
-	dhtmlgump <local.x> <local.y> 120 20 0 0 <def.bfont_lyellow>Store Tax
-	dhtmlgump <eval <local.x>+106> <local.y> 100 20 0 0 <def.bfont_lcyan><def.store_vendor_tax><def.bfont_gray>%
+	dhtmlgump <local.x> <local.y> 120 20 0 0 <local.font_text1>Store Tax
+	dhtmlgump <eval <local.x>+106> <local.y> 100 20 0 0 <local.font_text2><def.store_vendor_tax>%
 	local.y += 22
 endif
-dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_lyellow>Created on
-dhtmlgump <eval <local.x>+106> <local.y> 160 20 0 0 <def.bfont_size1><def.bfont_lcyan><ref1.tag.builton>
+dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_text1>Created on
+dhtmlgump <eval <local.x>+106> <local.y> 160 20 0 0 <def.bfont_size1><local.font_text2><ref1.tag.builton>
 local.y += 22
 if <ref5.rescount>
-	dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 180 20 0 0 <def.bfont_dred>Retrieve Recycled Items <def.bfont_gray>(<ref5.rescount>)
+	dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 180 20 0 0 <local.font_red>Retrieve Recycled Items <local.font_title>(<ref5.rescount>)
 	button <local.x> <local.y> <def.store_go_button> 1 0 103
 else
-	dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 120 20 0 0 <def.bfont_white>Sign Settings
+	dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 120 20 0 0 <local.font_title>Sign Settings
 	button <local.x> <local.y> <def.store_go_button> 1 0 105
 	local.y += 22
-	dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 120 20 0 0 <def.bfont_white>Vendor Settings
+	dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 120 20 0 0 <local.font_title>Vendor Settings
 	button <local.x> <local.y> <def.store_go_button> 0 2 0
 	local.y += 22
 	if <tag0.vendors>==0
-		dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 120 20 0 0 <def.bfont_white>Spawn all Vendors
+		dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 120 20 0 0 <local.font_title>Spawn all Vendors
 		button <local.x> <local.y> <def.store_add_button> 1 0 101
 	else
-		dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 120 20 0 0 <def.bfont_white>Remove all Vendors
+		dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 120 20 0 0 <local.font_title>Remove all Vendors
 		button <local.x> <local.y> <def.store_delvendor_button> 1 0 102
 	endif
 	if <tag0.gold> > 0
 		local.y += 22
-		dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 120 20 0 0 <def.bfont_white>Collect Gold
+		dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 120 20 0 0 <local.font_title>Collect Gold
 		button <local.x> <local.y> <def.store_go_button> 1 0 104
 	endif
 endif
@@ -79,24 +83,24 @@ endif
 PAGE 2
 local.y=90
 local.x=182
-button <eval <local.x>+89> <eval <local.y>+320> 5603 5607 0 1 0	// back
-button <eval <local.x>+128> <eval <local.y>+320> 5601 5605 0 <qval <ref1.room.tag0.max_vendors>==4?3:1> 0	// next if big store
+button <eval <local.x>+89> <eval <local.h>+16> 5603 5607 0 1 0	// back
+if <ref1.room.tag0.max_vendors> > 2
+    button <eval <local.x>+128> <eval <local.h>+16> 5601 5605 0 3 0	// next if big store
+endif
 
-dhtmlgump <local.x> <local.y> 220 20 0 0 <def.center><def.bfont_white>Vendor Settings
-local.y += 22
 for 1 2
 ref3=<ref1.tag.vendor_pack_<local._for>>
-dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_white>Vendor <local._for>
+dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Vendor <local._for>
 if !<isempty <tag.vendor_<local._for>>>
 	ref4=<ref1.tag.vendor_<local._for>>
 	gumppictiled <eval <local.x>+88> <local.y> 146 18 87
 	dtextentrylimited <eval <local.x>+92> <local.y> 130 15 0480 <eval <local._for>+50> 22 <ref4.name>	// 22 chars max
 	button <eval <local.x>+68> <eval <local.y>+3> <def.store_small_button> 1 0 <eval <local._for>+50>	// RENAME VENDOR	
 else
-	dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <def.bfont_lcyan>Empty
+	dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <local.font_text2>Empty
 endif
 local.y += 22
-dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_white>Description
+dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Description
 gumppictiled <eval <local.x>+88> <local.y> 146 18 87
 button <eval <local.x>+68> <eval <local.y>+3> <def.store_small_button> 1 0 <eval <local._for>+30>	// SET DESCRIPTION VENDOR
 if !<isempty <ref3.tag.vendor_desc>>
@@ -105,25 +109,25 @@ else
 	dtextentrylimited <eval <local.x>+92> <local.y> 140 15 0480 <eval <local._for>+30> 21 Empty
 endif
 local.y += 22
-dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_lyellow>Skin
-dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <def.bfont_lcyan><getargv 1 <tag.skin_<ref3.tag0.skin_current>>>
-local.y += 16
-dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_lyellow>Items
-dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <def.bfont_lcyan><ref3.rescount><def.bfont_gray> of <def.store_sell_max>
+dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Skin
+dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <local.font_text2><getargv 1 <tag.skin_<ref3.tag0.skin_current>>>
+local.y += 22
+dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Items
+dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <local.font_text2><ref3.rescount> of <def.store_sell_max>
 local.y += 22
 if !<isempty <tag.vendor_<local._for>>>
-	dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 90 20 0 0 <def.bfont_white>Remove
+	dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 90 20 0 0 <local.font_title>Remove
 	button <local.x> <local.y> <def.store_delvendor_button> 1 0 <eval <local._for>+10>		//	REMOVE VENDOR
 else
-	dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 100 20 0 0 <def.bfont_white>Add
+	dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 100 20 0 0 <local.font_title>Add
 	button <local.x> <local.y> <def.store_add_button> 1 0 <local._for>					//	ADD VENDOR
 endif
-dhtmlgump <eval <local.x>+170> <eval <local.y>+3> 100 20 0 0 <def.bfont_white>Sell Menu
+dhtmlgump <eval <local.x>+170> <eval <local.y>+3> 100 20 0 0 <local.font_title>Sell Menu
 button <eval <local.x>+135> <local.y> <def.store_vend_desc_button> 1 0 <eval <local._for>+20>		//	SELL MENU
 local.y += 22
-// dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 90 20 0 0 <def.bfont_white>New Button <eval <local._for>+60>
+// dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 90 20 0 0 <local.font_title>New Button <eval <local._for>+60>
 // button <local.x> <local.y> <def.store_vend_desc_button> 1 0 <eval <local._for>+60>		//	EMPTY
-dhtmlgump <eval <local.x>+170> <eval <local.y>+3> 100 20 0 0 <def.bfont_white>Skin List
+dhtmlgump <eval <local.x>+170> <eval <local.y>+3> 100 20 0 0 <local.font_title>Skin List
 button <eval <local.x>+135> <local.y> <def.store_go_button> 1 0 <eval <local._for>+40>		//	SKIN LIST
 local.y += 28
 endfor
@@ -136,45 +140,45 @@ if <ref1.room.tag0.max_vendors>==4
 	local.x=182
 	button <eval <local.x>+89> <eval <local.y>+320> 5603 5607 0 2 0	// back
 	// button <eval <local.x>+128> <eval <local.y>+320> 5601 5605 0 1 0	// next
-	dhtmlgump <local.x> <local.y> 220 20 0 0 <def.center><def.bfont_white>Vendor Settings
+	dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_text1>Vendor Settings
 	local.y += 22
 
 	for 3 4
 	ref3=<tag.vendor_pack_<local._for>>
-	dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_white>Vendor <local._for>
+	dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Vendor <local._for>
 	if !<isempty <tag.vendor_<local._for>>>
 		ref4=<tag.vendor_<local._for>>
 		gumppictiled <eval <local.x>+88> <local.y> 146 18 87
 		dtextentrylimited <eval <local.x>+92> <local.y> 130 15 0480 <eval <local._for>+50> 22 <ref4.name>	// 22 chars max
 		button <eval <local.x>+68> <eval <local.y>+3> <def.store_small_button> 1 0 <eval <local._for>+50>	// RENAME VENDOR	
 	else
-		dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <def.bfont_lcyan>Empty
+		dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <local.font_text2>Empty
 	endif
 	local.y += 22
-	dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_white>Description
+	dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Description
 	gumppictiled <eval <local.x>+88> <local.y> 146 18 87
 	button <eval <local.x>+68> <eval <local.y>+3> <def.store_small_button> 1 0 <eval <local._for>+30>	// SET DESCRIPTION VENDOR
 	dtextentrylimited <eval <local.x>+92> <local.y> 130 15 0480 <eval <local._for>+30> 22 <qval <isempty <ref3.tag.vendor_desc>>?Empty:<ref3.tag.vendor_desc>>  // 22 chars max	
 	local.y += 22
-	dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_lyellow>Skin
-	dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <def.bfont_lcyan><getargv 1 <tag.skin_<ref3.tag0.skin_current>>>
-	local.y += 16
-	dhtmlgump <local.x> <local.y> 90 20 0 0 <def.bfont_lyellow>Items
-	dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <def.bfont_lcyan><ref3.rescount><def.bfont_gray> of <def.store_sell_max>
+	dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Skin
+	dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <local.font_text2><getargv 1 <tag.skin_<ref3.tag0.skin_current>>>
+	local.y += 22
+	dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Items
+	dhtmlgump <eval <local.x>+92> <local.y> 100 20 0 0 <local.font_text2><ref3.rescount> of <def.store_sell_max>
 	local.y += 22
 	if !<isempty <tag.vendor_<local._for>>>
-		dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 90 20 0 0 <def.bfont_white>Remove
+		dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 90 20 0 0 <local.font_title>Remove
 		button <local.x> <local.y> <def.store_delvendor_button> 1 0 <eval <local._for>+10>		//	REMOVE VENDOR
 	else
-		dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 100 20 0 0 <def.bfont_white>Add
+		dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 100 20 0 0 <local.font_title>Add
 		button <local.x> <local.y> <def.store_add_button> 1 0 <local._for>					//	ADD VENDOR
 	endif
-	dhtmlgump <eval <local.x>+170> <eval <local.y>+3> 100 20 0 0 <def.bfont_white>Sell Menu
+	dhtmlgump <eval <local.x>+170> <eval <local.y>+3> 100 20 0 0 <local.font_title>Sell Menu
 	button <eval <local.x>+135> <local.y> <def.store_vend_desc_button> 1 0 <eval <local._for>+20>		//	SELL MENU
 	local.y += 22
-	// dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 90 20 0 0 <def.bfont_white>New Button <eval <local._for>+60>
+	// dhtmlgump <eval <local.x>+34> <eval <local.y>+3> 90 20 0 0 <local.font_title>New Button <eval <local._for>+60>
 	// button <local.x> <local.y> <def.store_vend_desc_button> 1 0 <eval <local._for>+60>		//	EMPTY
-	dhtmlgump <eval <local.x>+170> <eval <local.y>+3> 100 20 0 0 <def.bfont_white>Skin List
+	dhtmlgump <eval <local.x>+170> <eval <local.y>+3> 100 20 0 0 <local.font_title>Skin List
 	button <eval <local.x>+135> <local.y> <def.store_go_button> 1 0 <eval <local._for>+40>		//	SKIN LIST
 	local.y += 28
 	endfor
@@ -346,5 +350,14 @@ ON=104	// COLLECT GOLD
 ON=105	// SIGN SETTINGS
 	dialog d_store_sign
 	return 1
+
+ON=5555
+	ref1=<uid>	// sign
+    src.ctag0.dlg_bg += 1
+    if <src.ctag.dlg_bg>==<def.dlg_bg_max>
+        src.ctag.dlg_bg=
+    endif
+    ref1.dialog d_store_owner
+    return 1
 
 [EOF]

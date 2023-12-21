@@ -3,21 +3,27 @@
 PAGE 0
 
 ref1=<uid>	// sign
-f_gumppic_dialog 152,42,294,426
-dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><def.bfont_white><ref1.name> <def.bfont_lyellow><def.bfont_size4>Sign Settings
-dhtmlgump 354 441 80 25 0 0 <def.div_right><def.bfont_white><def.bfont_size4>$<def.bfont_lyellow><f_numformat <ref1.tag0.gold>>
+local.font_title=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_title>>
+local.font_text1=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text1>>
+local.font_text2=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text2>>
+local.font_red=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_red>>
+
+local.h=392
+f_gumppic_dialog 152,42,294,<local.h>
+dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><local.font_title><ref1.name> <def.bfont_size4><local.font_red><def.bfont_size4>Sign Settings
+dhtmlgump 354 <eval <local.h>+16> 80 25 0 0 <def.div_right><local.font_text1><def.bfont_size4>$<local.font_title><f_numformat <ref1.tag0.gold>>
 if <isempty <ref1.tag.dir>>
-	f_change_signs 196,110
+	f_change_signs 198,102
 else
-	f_change_signs2 196,110
+	f_change_signs2 198,102
 endif
 
 PAGE 1
 
 local.y=330
 local.x=190
-gumppictiled 157 <eval <local.y>-6> 284 6 <def.store_gump_separator>
-checkertrans 157 <eval <local.y>-6> 284 6
+gumppictiled 157 <eval <local.y>-6> 284 7 <def.dlg_bg_<src.ctag0.dlg_bg>_gump_div>
+// checkertrans 157 <eval <local.y>-6> 284 7
 local.y += 12
 dhtmlgump <eval <local.x>+40> <eval <local.y>+3> 100 20 0 0 <def.bfont_white>Flip
 button <eval <local.x>+5> <local.y> <def.store_go_button> 1 0 1

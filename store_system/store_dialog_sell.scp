@@ -9,8 +9,13 @@ if <ref2.rescount> < <def.store_sell_max>
 else
 	local.h = 364	
 endif
+local.font_title=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_title>>
+local.font_text1=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text1>>
+local.font_text2=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text2>>
+local.font_red=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_red>>
+
 f_gumppic_dialog 152,42,294,<local.h>
-dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><def.bfont_white><ref1.name> <def.bfont_lyellow>Vendor <getargv 2 <src.ctag.vendor>> <def.bfont_lgray>(<ref2.rescount>/<ref1.dmore2h>)
+dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><local.font_title><ref1.name> <def.bfont_size4><local.font_text2>Vendor <getargv 2 <src.ctag.vendor>> <def.bfont_lgray>(<ref2.rescount>/<ref1.dmore2h>)
 dhtmlgump 350 <eval <local.h>+16> 80 25 0 0 <def.div_right><def.bfont_lyellow><def.bfont_size4>$<def.bfont_white><f_numformat <ref1.tag0.gold>>
 tooltip 3000153		// Gold Avail
 
@@ -30,7 +35,7 @@ if !<isempty <ref2.tag.item_<local._for>>>
 		// ************	 PRICE
 		button 508 <eval <local.y>-6> <def.store_small_button> 1 0 101											// SET PRICE
 		dhtmlgump 530 <eval <local.y>-8> 90 20 0 0 <def.bfont_size4><def.bfont_lyellow>Price
-		gumppictiled 564 <eval <local.y>-9> 90 20 <def.store_text_bg>
+		gumppictiled 564 <eval <local.y>-9> 90 20 <def.dlg_bg_<src.ctag0.dlg_bg>_text_gump>
 		dtextentrylimited 570 <eval <local.y>-8> 80 15 0480 1 9 <eval <ref2.tag.item_<local._for>_price>>		// price
 		// ************ REMOVE
 		button 508 <eval <local.y>+16> <def.store_small_button> 1 0 103											// REMOVE

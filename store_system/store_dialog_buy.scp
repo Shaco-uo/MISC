@@ -4,11 +4,15 @@
 PAGE 0
 ref1=<getargv 0 <src.ctag.vendor>>	// sign
 ref2=<getargv 1 <src.ctag.vendor>> 	// pack
+local.font_title=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_title>>
+local.font_text1=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text1>>
+local.font_text2=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text2>>
+local.font_red=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_red>>
 local.h = 104 + <eval <ref2.rescount>*26>	// dialog height
 
 f_gumppic_dialog 152,42,294,<local.h>
-dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><def.bfont_white><ref1.name> <def.bfont_lyellow>Vendor <getargv 2 <src.ctag.vendor>> <def.bfont_lgray>(<ref2.rescount>/<ref1.dmore2h>)
-dhtmlgump 350 <eval <local.h>+16> 80 25 0 0 <def.div_right><def.bfont_lyellow>$<qval <src.rescount i_gold> > 0?<def.bfont_white><f_numformat <src.rescount i_gold>>:<def.bfont_dred>0>
+dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><local.font_title><ref1.name> <def.bfont_size4><local.font_text2>Vendor <getargv 2 <src.ctag.vendor>> <def.bfont_lgray>(<ref2.rescount>/<ref1.dmore2h>)
+dhtmlgump 350 <eval <local.h>+16> 80 25 0 0 <def.div_right><local.font_text1>$<qval <src.rescount i_gold> > 0?<local.font_title><f_numformat <src.rescount i_gold>>:<def.bfont_dred>0>
 tooltip 1115224		// The amount of gold you are carrying.
 
 PAGE 1
@@ -17,8 +21,8 @@ for 1 10
 if !<isempty <ref2.tag.item_<local._for>>>
 	ref3=<ref2.tag.item_<local._for>>
 	button 162 <eval <local.y>-4> <def.store_list_button> 1 0 <local._for>	// buy
-	dhtmlgump 176 <local.y> 170 20 0 0 <def.bfont_size4><qval <local._for>==<src.ctag0.store_option>?<def.bfont_yellow>:<def.bfont_white>><qval <ref3.amount>!=1?<ref3.amount> <ref3.name>:<ref3.name>>	// name
-	dhtmlgump 350 <local.y> 72 20 0 0 <qval <src.restest <eval <ref2.tag.item_<local._for>_price>> i_gold>?<def.bfont_lyellow>:<def.bfont_dred>><def.DIV_RIGHT><f_numformat <ref2.tag0.item_<local._for>_price>>	// price
+	dhtmlgump 176 <local.y> 170 20 0 0 <def.bfont_size4><qval <local._for>==<src.ctag0.store_option>?<def.bfont_yellow>:<local.font_title>><qval <ref3.amount>!=1?<ref3.amount> <ref3.name>:<ref3.name>>	// name
+	dhtmlgump 350 <local.y> 72 20 0 0 <qval <src.restest <eval <ref2.tag.item_<local._for>_price>> i_gold>?<local.font_text1>:<def.bfont_dred>><def.DIV_RIGHT><f_numformat <ref2.tag0.item_<local._for>_price>>	// price
 	tooltip 1043304,<ref2.tag0.item_<local._for>_price>		// Price: ~1_COST~
 	
 	// **** RIGHT PANEL
@@ -29,11 +33,11 @@ if !<isempty <ref2.tag.item_<local._for>>>
 		if <ref2.tag0.item_<local._for>_price> < 1000
 			local.x -= 12
 		endif
-		dhtmlgump <local.x> <eval <local.y>-8> 80 15 0 0 <def.div_right><def.bfont_white>$<def.bfont_white><f_numformat <ref2.tag0.item_<local._for>_price>> // PRICE
+		dhtmlgump <local.x> <eval <local.y>-8> 80 15 0 0 <def.div_right><local.font_title>$<def.bfont_white><f_numformat <ref2.tag0.item_<local._for>_price>> // PRICE
 		// gumppic <eval <local.x>+78> <eval <local.y>-6> 1398 0 	// coin
 		if <src.restest <ref2.tag0.item_<src.ctag.store_option>_price> i_gold>
 			button 536 <eval <local.y>+16> <def.store_vend_desc_button> 1 0 5001			// BUY
-			dhtmlgump 570 <eval <local.y>+19> 60 20 0 0 <def.bfont_size4><def.bfont_white>Buy
+			dhtmlgump 570 <eval <local.y>+19> 60 20 0 0 <def.bfont_size4><local.font_title>Buy
 		else
 			dhtmlgump <eval <local.x>+4> <eval <local.y>+12> 90 15 0 0 <def.bfont_size1><def.center><def.bfont_gray>Not Enough Gold
 		endif
