@@ -106,7 +106,6 @@ dhtmlgump 190 82 220 20 0 0 <def.center><def.bfont_size7><def.<def.dlg_bg_<src.c
 dhtmlgump 190 102 220 20 0 0 <def.center><def.bfont_size4><def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text2>>Text 2 Color
 dhtmlgump 190 122 220 20 0 0 <def.center><def.bfont_size7><def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_red>>Red Text Color
 dhtmlgump 190 142 220 20 0 0 <def.center><def.bfont_size4><def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text2>>Dialog 2 <def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_title>>& <def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text1>>Text Gump
-local.y += 34
 f_gumppic_dialog2 257,171,90,30
 gumppictiled 262 176 80 20 <def.dlg_bg_<src.ctag0.dlg_bg>_text_gump>
 DTextenTrylimited 264 176 122 15 0480 1 20 Text Entry
