@@ -25,8 +25,8 @@ dlg_bg_2_text_gump      5174
 dlg_bg_2_gump_div       2171
 dlg_bg_2_gump_bg        9304
 dlg_bg_2_font_title		bfont_black
-dlg_bg_2_font_text1		bfont_dyellow
-dlg_bg_2_font_text2		bfont_lyellow
+dlg_bg_2_font_text1		bfont_white
+dlg_bg_2_font_text2		bfont_dyellow
 dlg_bg_2_font_red		bfont_dred
 
 dlg_bg_3_resizepic   	3600
@@ -99,13 +99,18 @@ gumppictiled <eval <argv[0]>+5> <eval (<argv[1]>+<argv[3]>)-5> <eval <argv[2]>-1
 [DIALOG d_test_bg]
 300,200
 PAGE 0
+local.font_title=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_title>>
+local.font_text1=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text1>>
+local.font_text2=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text2>>
+local.font_red=<def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_red>>
+
 f_gumppic_dialog 152,42,294,326
-dhtmlgump 354 340 80 25 0 0 <def.div_right><def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text2>><def.bfont_size4>BG <def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text1>><src.ctag0.dlg_bg>
-dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><def.h3><def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_title>>Test Dialog Title
-dhtmlgump 190 82 220 20 0 0 <def.center><def.bfont_size7><def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text1>>Text 1 Color
-dhtmlgump 190 102 220 20 0 0 <def.center><def.bfont_size4><def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text2>>Text 2 Color
-dhtmlgump 190 122 220 20 0 0 <def.center><def.bfont_size7><def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_red>>Red Text Color
-dhtmlgump 190 142 220 20 0 0 <def.center><def.bfont_size4><def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text2>>Dialog 2 <def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_title>>& <def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_text1>>Text Gump
+dhtmlgump 354 340 80 25 0 0 <def.div_right><local.font_text2><def.bfont_size4>BG <local.font_text1><src.ctag0.dlg_bg>
+dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><def.h3><local.font_title>Test Dialog Title
+dhtmlgump 190 82 220 20 0 0 <def.center><def.bfont_size7><local.font_text1>Text 1 Color
+dhtmlgump 190 102 220 20 0 0 <def.center><def.bfont_size4><local.font_text2>Text 2 Color
+dhtmlgump 190 122 220 20 0 0 <def.center><def.bfont_size7><local.font_red>Red Text Color
+dhtmlgump 190 142 220 20 0 0 <def.center><def.bfont_size4><local.font_text2>Dialog 2 <local.font_title>& <local.font_text1>Text Gump
 f_gumppic_dialog2 257,171,90,30
 gumppictiled 262 176 80 20 <def.dlg_bg_<src.ctag0.dlg_bg>_text_gump>
 DTextenTrylimited 264 176 122 15 0480 1 20 Text Entry
