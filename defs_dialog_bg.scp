@@ -1,6 +1,6 @@
 [DEFNAME dialog_bg]
-dlg_bg_max			    7	// max number of bgs
-dlg_bg_button_next      2362 2360   // change bg
+dlg_bg_max			    7	           // max number of bgs
+dlg_bg_button_next      2362 2360      // change bg
 
 dlg_bg_0_resizepic   	9250           // trans      
 dlg_bg_0_text_gump      2624
@@ -13,8 +13,8 @@ dlg_bg_0_font_red		bfont_lred
 
 dlg_bg_1_resizepic   	9270            // main background (resizepic)
 dlg_bg_1_text_gump      5124            // dialog textbox (gumppictiled)
-dlg_bg_1_gump_div       9274    // 5124            // background lines (gumppictiled)
-dlg_bg_1_gump_bg        2702   // 87    // background body (gumppictiled)
+dlg_bg_1_gump_div       9274            // background lines (gumppictiled)
+dlg_bg_1_gump_bg        2702            // background body (gumppictiled)
 dlg_bg_1_font_title		bfont_white		// title text
 dlg_bg_1_font_text1		bfont_lyellow	// text1
 dlg_bg_1_font_text2		bfont_cyan	    // text2
@@ -22,7 +22,7 @@ dlg_bg_1_font_red		bfont_red		// red text
 
 dlg_bg_2_resizepic   	2620
 dlg_bg_2_text_gump      5174
-dlg_bg_2_gump_div       2171    // 87
+dlg_bg_2_gump_div       2171
 dlg_bg_2_gump_bg        9304
 dlg_bg_2_font_title		bfont_black
 dlg_bg_2_font_text1		bfont_dyellow
@@ -35,7 +35,7 @@ dlg_bg_3_gump_div       9274
 dlg_bg_3_gump_bg        9254
 dlg_bg_3_font_title		bfont_white
 dlg_bg_3_font_text1		bfont_lgray
-dlg_bg_3_font_text2		bfont_dblue
+dlg_bg_3_font_text2		bfont_black
 dlg_bg_3_font_red		bfont_dred
 
 dlg_bg_4_resizepic   	2620
@@ -47,9 +47,9 @@ dlg_bg_4_font_text1		bfont_lcyan
 dlg_bg_4_font_text2		bfont_lyellow
 dlg_bg_4_font_red		bfont_dred
 
-dlg_bg_5_resizepic   	9270
+dlg_bg_5_resizepic   	9270            // trans
 dlg_bg_5_text_gump      2624
-dlg_bg_5_gump_div       9270    // 5124
+dlg_bg_5_gump_div       9274
 dlg_bg_5_gump_bg        9274
 dlg_bg_5_font_title		bfont_lblue
 dlg_bg_5_font_text1		bfont_white
@@ -59,7 +59,7 @@ dlg_bg_5_font_red		bfont_lred
 dlg_bg_6_resizepic   	3500
 dlg_bg_6_text_gump      3604
 dlg_bg_6_gump_div       5058
-dlg_bg_6_gump_bg        3504    // 9274
+dlg_bg_6_gump_bg        3504
 dlg_bg_6_font_title		bfont_black
 dlg_bg_6_font_text1		bfont_dyellow
 dlg_bg_6_font_text2		bfont_white
@@ -77,11 +77,11 @@ gumppictiled <argv[0]> <argv[1]> 5 <argv[3]> <def.dlg_bg_<src.ctag0.dlg_bg>_gump
 gumppictiled <eval (<argv[2]>+<argv[0]>)-5> <argv[1]> 5 <argv[3]> <def.dlg_bg_<src.ctag0.dlg_bg>_gump_div>	                    // right vertical line
 gumppictiled <eval <argv[0]>+5> <argv[1]> <eval <argv[2]>-10> 5 <def.dlg_bg_<src.ctag0.dlg_bg>_gump_div>	                    // top horizontal line
 if <argv[3]> > 100
-    gumppictiled <eval <argv[0]>+5> <eval <argv[1]>+31> <eval <argv[2]>-10> 5 <def.dlg_bg_<src.ctag0.dlg_bg>_gump_div>	            // top horizontal line 2
-    gumppictiled <eval <argv[0]>+5> <eval <argv[3]>+6> <eval <argv[2]>-10> 5 <def.dlg_bg_<src.ctag0.dlg_bg>_gump_div>	            // bottom horizontal line 1
+    gumppictiled <eval <argv[0]>+5> <eval <argv[1]>+31> <eval <argv[2]>-10> 7 <def.dlg_bg_<src.ctag0.dlg_bg>_gump_div>	            // top horizontal line 2
+    gumppictiled <eval <argv[0]>+5> <eval <argv[3]>+6> <eval <argv[2]>-10> 7 <def.dlg_bg_<src.ctag0.dlg_bg>_gump_div>	            // bottom horizontal line 1
 endif
 gumppictiled <eval <argv[0]>+5> <eval (<argv[1]>+<argv[3]>)-5> <eval <argv[2]>-10> 5 <def.dlg_bg_<src.ctag0.dlg_bg>_gump_div>	// bottom horizontal line 2
-button <eval <argv[0]>+7> <eval <argv[1]>+6> <def.dlg_bg_button_next> 1 0 5555
+button <eval <argv[0]>+7> <eval <argv[1]>+7> <def.dlg_bg_button_next> 1 0 5555
 
 [FUNCTION f_gumppic_dialog2]	// f_gumppic_dialog2 x,y,w,h
 if <src.ctag0.dlg_bg>==0 || <src.ctag0.dlg_bg>==5
