@@ -140,4 +140,13 @@ ON=5003	// CONTAINER LIST
 	dialog d_container_list
 	return 1
 
+ON=5555
+    ref1=<getargv 0 <src.ctag.vendor>> 		// sign
+    src.ctag0.dlg_bg += 1
+    if <src.ctag.dlg_bg>==<def.dlg_bg_max>
+        src.ctag.dlg_bg=
+    endif
+    ref1.dialog d_store_buy
+    return 1
+
 [EOF]

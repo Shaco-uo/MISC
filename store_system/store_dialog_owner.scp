@@ -93,7 +93,7 @@ ref3=<ref1.tag.vendor_pack_<local._for>>
 dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Vendor <local._for>
 if !<isempty <tag.vendor_<local._for>>>
 	ref4=<ref1.tag.vendor_<local._for>>
-	gumppictiled <eval <local.x>+88> <local.y> 146 18 87
+	gumppictiled <eval <local.x>+88> <local.y> 146 18 <def.dlg_bg_<src.ctag0.dlg_bg>_text_gump>
 	dtextentrylimited <eval <local.x>+92> <local.y> 130 15 0480 <eval <local._for>+50> 22 <ref4.name>	// 22 chars max
 	button <eval <local.x>+68> <eval <local.y>+3> <def.store_small_button> 1 0 <eval <local._for>+50>	// RENAME VENDOR	
 else
@@ -101,7 +101,7 @@ else
 endif
 local.y += 22
 dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Description
-gumppictiled <eval <local.x>+88> <local.y> 146 18 87
+gumppictiled <eval <local.x>+88> <local.y> 146 18 <def.dlg_bg_<src.ctag0.dlg_bg>_text_gump>
 button <eval <local.x>+68> <eval <local.y>+3> <def.store_small_button> 1 0 <eval <local._for>+30>	// SET DESCRIPTION VENDOR
 if !<isempty <ref3.tag.vendor_desc>>
 	dtextentrylimited <eval <local.x>+92> <local.y> 140 15 0480 <eval <local._for>+30> 21 <ref3.tag.vendor_desc>	// 22 chars max	
@@ -148,7 +148,7 @@ if <ref1.room.tag0.max_vendors>==4
 	dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Vendor <local._for>
 	if !<isempty <tag.vendor_<local._for>>>
 		ref4=<tag.vendor_<local._for>>
-		gumppictiled <eval <local.x>+88> <local.y> 146 18 87
+		gumppictiled <eval <local.x>+88> <local.y> 146 18 <def.dlg_bg_<src.ctag0.dlg_bg>_text_gump>
 		dtextentrylimited <eval <local.x>+92> <local.y> 130 15 0480 <eval <local._for>+50> 22 <ref4.name>	// 22 chars max
 		button <eval <local.x>+68> <eval <local.y>+3> <def.store_small_button> 1 0 <eval <local._for>+50>	// RENAME VENDOR	
 	else
@@ -156,7 +156,7 @@ if <ref1.room.tag0.max_vendors>==4
 	endif
 	local.y += 22
 	dhtmlgump <local.x> <local.y> 90 20 0 0 <local.font_title>Description
-	gumppictiled <eval <local.x>+88> <local.y> 146 18 87
+	gumppictiled <eval <local.x>+88> <local.y> 146 18 <def.dlg_bg_<src.ctag0.dlg_bg>_text_gump>
 	button <eval <local.x>+68> <eval <local.y>+3> <def.store_small_button> 1 0 <eval <local._for>+30>	// SET DESCRIPTION VENDOR
 	dtextentrylimited <eval <local.x>+92> <local.y> 130 15 0480 <eval <local._for>+30> 22 <qval <isempty <ref3.tag.vendor_desc>>?Empty:<ref3.tag.vendor_desc>>  // 22 chars max	
 	local.y += 22
