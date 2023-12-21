@@ -1,0 +1,139 @@
+[DIALOG d_store_buy]
+300,200
+
+PAGE 0
+ref1=<getargv 0 <src.ctag.vendor>>	// sign
+ref2=<getargv 1 <src.ctag.vendor>> 	// pack
+local.h = 104 + <eval <ref2.rescount>*26>	// dialog height
+
+f_gumppic_dialog 152,42,294,<local.h>
+dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><def.bfont_white><ref1.name> <def.bfont_lyellow>Vendor <getargv 2 <src.ctag.vendor>> <def.bfont_lgray>(<ref2.rescount>/<ref1.dmore2h>)
+dhtmlgump 350 <eval <local.h>+16> 80 25 0 0 <def.div_right><def.bfont_lyellow>$<qval <src.rescount i_gold> > 0?<def.bfont_white><f_numformat <src.rescount i_gold>>:<def.bfont_dred>0>
+tooltip 1115224		// The amount of gold you are carrying.
+
+PAGE 1
+local.y=100
+for 1 10
+if !<isempty <ref2.tag.item_<local._for>>>
+	ref3=<ref2.tag.item_<local._for>>
+	button 162 <eval <local.y>-4> <def.store_list_button> 1 0 <local._for>	// buy
+	dhtmlgump 176 <local.y> 170 20 0 0 <def.bfont_size4><qval <local._for>==<src.ctag0.store_option>?<def.bfont_yellow>:<def.bfont_white>><qval <ref3.amount>!=1?<ref3.amount> <ref3.name>:<ref3.name>>	// name
+	dhtmlgump 350 <local.y> 72 20 0 0 <qval <src.restest <eval <ref2.tag.item_<local._for>_price>> i_gold>?<def.bfont_lyellow>:<def.bfont_dred>><def.DIV_RIGHT><f_numformat <ref2.tag0.item_<local._for>_price>>	// price
+	tooltip 1043304,<ref2.tag0.item_<local._for>_price>		// Price: ~1_COST~
+	
+	// **** RIGHT PANEL
+	if !<isempty <src.ctag.store_option>> && <local._for>==<src.ctag.store_option>
+		f_gumppic_dialog2 433,<eval <local.y>-20>,186,<qval <isempty <ref2.tag.item_<src.ctag.store_option>_desc>>?86:126>   // background
+		button 422 <eval <local.y>+1> <def.store_back_button> 1 0 0										// back / EXIT 
+		local.x=506
+		if <ref2.tag0.item_<local._for>_price> < 1000
+			local.x -= 12
+		endif
+		dhtmlgump <local.x> <eval <local.y>-8> 80 15 0 0 <def.div_right><def.bfont_white>$<def.bfont_white><f_numformat <ref2.tag0.item_<local._for>_price>> // PRICE
+		// gumppic <eval <local.x>+78> <eval <local.y>-6> 1398 0 	// coin
+		if <src.restest <ref2.tag0.item_<src.ctag.store_option>_price> i_gold>
+			button 536 <eval <local.y>+16> <def.store_vend_desc_button> 1 0 5001			// BUY
+			dhtmlgump 570 <eval <local.y>+19> 60 20 0 0 <def.bfont_size4><def.bfont_white>Buy
+		else
+			dhtmlgump <eval <local.x>+4> <eval <local.y>+12> 90 15 0 0 <def.bfont_size1><def.center><def.bfont_gray>Not Enough Gold
+		endif
+		if !<isempty <ref2.tag.item_<src.ctag.store_option>_desc>>  // DESCRIPTION
+			dhtmlgump 448 <eval <local.y>+50> 160 40 0 0 <def.bfont_size1><def.bfont_gray><ref2.tag.item_<src.ctag.store_option>_desc>
+		endif
+		// ************	 ICON
+		// f_gumppic_dialog 438,<eval <local.y>-23>,90,90															// square frame
+		f_center_icon 478,<eval <local.y>+12>,<ref3.dispiddec>,<ref3.color>							// item icon
+		if <ref3.isweapon> || <ref3.isarmor> || <ref3.type>==t_jewelry || <ref3.type>==t_talisman
+			button 586 <eval <local.y>-10> <def.store_lore_button> 1 0 5002										// arms lore
+			tooltip 1002034 																		// Arms lore
+		endif
+		if <ref3.type>==t_container
+			button 630 <eval <local.y>+12> <def.store_lore_button> 1 0 5003							// SEE CONTAINER
+			tooltip 1011397		// Held Items
+		endif
+	endif
+local.y += 26
+endif
+endfor
+
+[DIALOG d_store_buy PREBUTTON]
+if <argn1>!=0 && <distance> > 3
+	src.sysmessage @31,,1 <name> is too far away.
+	return 1
+endif
+src.dialogclose d_store_buy
+
+[DIALOG d_store_buy BUTTON]
+ON=0
+	ref1=<getargv 0 <src.ctag.vendor>> 		// sign
+	if !<isempty <src.ctag.store_option>>
+		src.ctag.store_option=
+		ref1.dialog d_store_buy
+	else
+		src.ctag.vendor=
+	endif
+	return 1
+ON=1 10										// SELECT ITEM #
+	ref1=<getargv 0 <src.ctag.vendor>> 		// sign
+	src.ctag.store_option=<argn1>
+	ref1.dialog d_store_buy
+	return 1
+on=5001										// BUY ITEM
+	ref1=<getargv 0 <src.ctag.vendor>> 		// sign
+	ref2=<getargv 1 <src.ctag.vendor>> 		// pack
+
+	if <isempty <ref2.tag.item_<src.ctag.store_option>>>
+		src.sysmessage @,,1 The item is no longer available.
+		return 1
+	endif
+	if !<src.restest <ref2.tag0.item_<src.ctag.store_option>_price> i_gold>
+		src.sysmessage @,,1 You don't have enough gold to purchase <ref1.name>.
+		return 1
+	endif
+
+	src.consume <ref2.tag0.item_<src.ctag.store_option>_price> i_gold
+	ref3=<ref2.tag.item_<src.ctag.store_option>>	// item
+	if <ref3.amount>!=1
+		if !<isempty <ref3.tag.old_maxamount>>
+			ref3.tag.old_maxamount=<ref3.maxamount>
+		else
+			ref3.maxamount=
+		endif
+	endif
+	ref3.attr &=~ 010
+	ref3.bounce <src>
+	src.sysmessage @52,,1 You bought <qval <ref1.amount>==1?<ref3.name>:<ref3.amount> <ref3.name>> for <f_numformat <ref2.tag0.item_<src.ctag.store_option>_price>> gold.
+	local.g=<ref2.tag0.item_<src.ctag.store_option>_price>
+	if <def0.store_vendor_tax>!=0
+		local.g -= <muldiv <local.g>,<def.store_vendor_tax>,100>
+	endif
+	ref1.tag0.gold += <local.g>
+	ref2.tag.item_<src.ctag.store_option>=
+	ref2.tag.item_<src.ctag.store_option>_price=
+	ref2.tag.item_<src.ctag.store_option>_desc=	
+
+	src.ctag.store_option=
+	ref1.dialog d_store_buy
+	return 1
+
+
+ON=5002	// armslore
+	ref1=<getargv 0 <src.ctag.vendor>> 		// sign
+	ref2=<getargv 1 <src.ctag.vendor>> 		// pack
+	ref3=<ref2.tag.item_<src.ctag.store_option>>
+	src.ctag.item_lore=<ref3>
+	src.ctag.craft.skill=<serv.skill.<ref3.skillmake.1.key>.name>
+	ref1.dialog d_store_buy
+	dialog d_item_lore
+	return 1
+
+ON=5003	// CONTAINER LIST
+	ref1=<getargv 0 <src.ctag.vendor>> 		// sign
+	ref2=<getargv 1 <src.ctag.vendor>> 		// pack
+	ref3=<ref2.tag.item_<src.ctag.store_option>>
+	src.ctag.container=<ref3>
+	ref1.dialog d_store_buy
+	dialog d_container_list
+	return 1
+
+[EOF]

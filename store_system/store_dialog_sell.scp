@@ -1,0 +1,163 @@
+[DIALOG d_store_sell]
+300,200
+
+PAGE 0
+ref1=<getargv 0 <src.ctag.vendor>>	// sign
+ref2=<getargv 1 <src.ctag.vendor>> 	// pack
+if <ref2.rescount> < <def.store_sell_max>
+	local.h = 130 + <eval <ref2.rescount>*26>
+else
+	local.h = 364	
+endif
+f_gumppic_dialog 152,42,294,<local.h>
+dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><def.bfont_white><ref1.name> <def.bfont_lyellow>Vendor <getargv 2 <src.ctag.vendor>> <def.bfont_lgray>(<ref2.rescount>/<ref1.dmore2h>)
+dhtmlgump 350 <eval <local.h>+16> 80 25 0 0 <def.div_right><def.bfont_lyellow><def.bfont_size4>$<def.bfont_white><f_numformat <ref1.tag0.gold>>
+tooltip 3000153		// Gold Avail
+
+PAGE 1
+local.y=100
+for 1 <def.store_sell_max>
+if !<isempty <ref2.tag.item_<local._for>>>
+	ref3=<ref2.tag.item_<local._for>>	// ITEM UID
+	button 162 <eval <local.y>-4> <def.store_list_button> 1 0 <local._for>
+	dhtmlgump 176 <local.y> 170 20 0 0 <def.bfont_size4><qval <local._for>==<src.ctag0.store_option>?<def.bfont_yellow>:<def.bfont_white>><qval <ref3.amount>!=1?<ref3.amount> <ref3.name>:<ref3.name>>	// name
+	dhtmlgump 350 <local.y> 72 20 0 0 <def.bfont_size4><qval <src.restest <ref2.tag0.item_<local._for>_price> i_gold>?<def.bfont_lyellow>:<def.bfont_dred>><def.div_right><f_numformat <ref2.tag0.item_<local._for>_price>>	// price
+
+	// **** RIGHT PANEL
+	if !<isempty <src.ctag.store_option>> && <local._for>==<src.ctag.store_option>
+		f_gumppic_dialog2 433,<eval <local.y>-20>,240,126 														// background
+		button 422 <eval <local.y>+1> <def.store_back_button> 1 0 0												// back / EXIT 
+		// ************	 PRICE
+		button 508 <eval <local.y>-6> <def.store_small_button> 1 0 101											// SET PRICE
+		dhtmlgump 530 <eval <local.y>-8> 90 20 0 0 <def.bfont_size4><def.bfont_lyellow>Price
+		gumppictiled 564 <eval <local.y>-9> 90 20 <def.store_text_bg>
+		dtextentrylimited 570 <eval <local.y>-8> 80 15 0480 1 9 <eval <ref2.tag.item_<local._for>_price>>		// price
+		// ************ REMOVE
+		button 508 <eval <local.y>+16> <def.store_small_button> 1 0 103											// REMOVE
+		dhtmlgump 530 <eval <local.y>+14> 90 20 0 0 <def.bfont_size4><def.bfont_lyellow>Remove
+		// ************ DESCRIPTION
+		button 508 <eval <local.y>+36> <def.store_small_button> 1 0 102											// SET DESC
+		dhtmlgump 530 <eval <local.y>+34> 164 20 0 0 <def.bfont_size4><def.bfont_lyellow>Description
+		dtextentrylimited 460 <eval <local.y>+52> 200 40 998 2 60 <qval (<isempty <ref2.tag.item_<src.ctag.store_option>_desc>>)?Enter Description:<ref2.tag.item_<src.ctag.store_option>_desc>>	// DESCRIPTION
+		// ************	 ICON
+		gumppic 446 <eval <local.y>-7> 1366															// square frame
+		f_center_icon 470,<eval <local.y>+12>,<ref3.dispiddec>,<ref3.color>							// item icon
+		// tilepichue <local.x> <local.y> <ref3.dispiddec> <ref3.color>								// ITEM ICON
+		if <ref3.isweapon> || <ref3.isarmor> || <ref3.type>==t_jewelry || <ref3.type>==t_talisman
+			button 630 <eval <local.y>+12> <def.store_lore_button> 1 0 104							// arms lore
+			tooltip 1002034 																		// Arms lore
+		endif
+		if <ref3.type>==t_container
+			button 630 <eval <local.y>+12> <def.store_lore_button> 1 0 111							// SEE CONTAINER
+			tooltip 1011397		// Held Items
+		endif
+	endif
+	local.y += 26
+else
+	if !<local.empty>
+		local.empty=<local._for>
+	endif
+endif
+endfor
+if <local.empty>
+	button 162 <eval <local.y>-4> <def.store_list_button> 1 0 <local.empty>
+	dhtmlgump 190 <local.y> 223 20 0 0 <def.center><def.h3><def.bfont_lgray>Empty	// add empty stuff
+endif
+
+[DIALOG d_store_sell PREBUTTON]
+if <distance> > 3
+	src.sysmessage @,,1 <name> is too far away.
+	return 1
+endif
+src.dialogclose d_store_sell
+
+[DIALOG d_store_sell BUTTON]
+ON=0
+	if !<isempty <src.ctag.store_option>>	// cancel right panel
+		src.ctag.store_option=
+		ref2=<getargv 1 <src.ctag.vendor>> 	// pack
+		ref2.dialog d_store_sell
+	else
+		src.ctag.vendor=
+	endif
+	return 1
+	
+ON=1 20	// SELECT/SELL ITEM
+	src.ctag.store_option=<argn1>		// item #
+	ref2=<getargv 1 <src.ctag.vendor>> 	// pack
+	if <isempty <ref2.tag.item_<argn1>>> 
+		src.message @,,1 Select item to sell
+		src.targetf f_store_sell_item
+	else
+		ref2.dialog d_store_sell
+		return 1
+	endif
+
+ON=101							// SET PRICE
+	ref1=<getargv 1 <src.ctag.vendor>> 				// pack
+	ref2=<ref1.tag.item_<src.ctag.store_option>>	// item uid
+	if !<isnum <argtxt[1]>> || <argtxt[1]> > 99999999 || <argtxt[1]> < 1
+		src.sysmessage @31,,1 Invalid Amount.
+	else
+		ref1.tag.item_<src.ctag.store_option>_price=<argtxt[1]>
+		src.sysmessage @,,1 <ref2.name> price is now <f_numformat <argtxt[1]>>.
+	endif
+	ref1.dialog d_store_sell
+	return 1
+
+ON=102							// SET DESC
+	if <isnum <argtxt[2]>>
+		src.sysmessage @31,,1 Invalid Text.
+		return 1
+	endif
+	ref1=<getargv 1 <src.ctag.vendor>> 			  // pack
+	ref2=<ref1.tag.item_<src.ctag.store_option>>  // item uid
+	ref1.tag.item_<src.ctag.store_option>_desc=<argtxt[2]>
+	src.sysmessage @,,1 <ref2.name> description has been updated.
+	ref1.dialog d_store_sell
+	return 1
+
+ON=103							// REMOVE
+	ref1=<getargv 1 <src.ctag.vendor>> 			 // pack
+	ref2=<ref1.tag.item_<src.ctag.store_option>> // item uid
+	ref2.attr &=~ 010
+	ref2.bounce <src>
+	ref1.tag.item_<src.ctag.store_option>=
+	ref1.tag.item_<src.ctag.store_option>_price=
+	ref1.tag.item_<src.ctag.store_option>_desc=
+	src.sysmessage @,,1 You retrieve <ref2.name> from vendor <getargv 1 <src.ctag.vendor>> inventory.
+	src.ctag.store_option=
+	ref1.dialog d_store_sell
+	return 1
+
+ON=104	// armslore
+	ref1=<getargv 0 <src.ctag.vendor>> 		// sign
+	ref2=<getargv 1 <src.ctag.vendor>> 		// pack
+	ref3=<ref2.tag.item_<src.ctag.store_option>>
+	src.ctag.item_lore=<ref3>
+	src.ctag.craft.skill=<serv.skill.<ref3.skillmake.1.key>.name>
+	ref1.dialog d_store_sell
+	dialog d_item_lore
+	return 1
+
+ON=105	// collect gold
+	ref1=<getargv 0 <src.ctag.vendor>> 		// sign
+	if <ref1.tag0.gold> >= 1
+		src.gold += <ref1.tag0.gold>
+		src.sysmessage @55,,1 <ref1.tag0.gold>g has been sent to your bank account.
+		ref1.tag.gold=
+	endif
+	ref1.dialog d_vendor_sign_owner
+	return 1
+
+ON=111	// CONTAINER LIST
+	ref1=<getargv 0 <src.ctag.vendor>> 		// sign
+	ref2=<getargv 1 <src.ctag.vendor>> 		// pack
+	ref3=<ref2.tag.item_<src.ctag.store_option>>
+	src.ctag.container=<ref3>
+	src.dialogclose d_container_list
+	ref1.dialog d_store_sell
+	dialog d_container_list
+	return 1
+
+[eof]

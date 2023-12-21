@@ -1,0 +1,128 @@
+[DIALOG d_store_sign]
+300,200
+PAGE 0
+
+ref1=<uid>	// sign
+f_gumppic_dialog 152,42,294,426
+dhtmlgump 190 51 220 20 0 0 <def.center><def.bfont_size7><def.bfont_white><ref1.name> <def.bfont_lyellow><def.bfont_size4>Sign Settings
+dhtmlgump 354 441 80 25 0 0 <def.div_right><def.bfont_white><def.bfont_size4>$<def.bfont_lyellow><f_numformat <ref1.tag0.gold>>
+if <isempty <ref1.tag.dir>>
+	f_change_signs 196,110
+else
+	f_change_signs2 196,110
+endif
+
+PAGE 1
+
+local.y=330
+local.x=190
+gumppictiled 157 <eval <local.y>-6> 284 6 <def.store_gump_separator>
+checkertrans 157 <eval <local.y>-6> 284 6
+local.y += 12
+dhtmlgump <eval <local.x>+40> <eval <local.y>+3> 100 20 0 0 <def.bfont_white>Flip
+button <eval <local.x>+5> <local.y> <def.store_go_button> 1 0 1
+if <ref1.p.z> < 26	// max <p.z>
+	dhtmlgump <eval <local.x>+138> <local.y> 100 20 0 0 <def.bfont_white>Nudge Up
+	button <eval <local.x>+115> <local.y> 5600 5604 1 0 3
+endif
+
+local.y += 22
+dhtmlgump <eval <local.x>+40> <eval <local.y>+3> 100 20 0 0 <def.bfont_white>Relocate
+button <eval <local.x>+5> <local.y> <def.store_vend_desc_button> 1 0 2
+if <ref1.p.z> > 5	// min <p.z>
+	dhtmlgump <eval <local.x>+138> <local.y> 100 20 0 0 <def.bfont_white>Nudge Down
+	button <eval <local.x>+115> <eval <local.y>+2> 5602 5606 1 0 4
+endif
+
+[DIALOG d_store_sign prebutton]
+src.dialogclose d_store_sign
+src.dialogclose d_store_owner
+src.dialogclose d_house_store_owner
+
+[DIALOG d_store_sign button]
+ON=0
+	ref1=<uid>	// sign
+	if <ref1.baseid>==i_store_sign
+		ref1.dialog d_store_owner
+	else
+		ref1.dialog d_house_store_owner
+	endif
+	return 1
+
+ON=1
+	ref1=<uid>	// sign
+	if <isempty <ref1.tag.dir>>
+		local.sign=<eval <ref1.dispiddec>+1>
+		ref1.dispid=<local.sign>
+		ref1.tag.dir=1
+	else
+		local.sign=<eval <ref1.dispiddec>-1>
+		ref1.dispid=<local.sign>
+		ref1.tag.dir=
+	endif
+	ref1.update
+	ref1.dialog d_store_sign
+	return 1
+
+ON=2
+	ref1=<uid>	// sign
+	if <ref1.baseid>==i_store_sign
+		src.targetfg f_store_sign_move <ref1>
+	else
+		src.targetfg f_house_store_signmove <ref1>
+	endif
+	return 1
+
+ON=3	// nudgedown
+	src.dialogclose d_store_sign
+	ref1=<src.account.tag.store>
+	if <src.isgm>
+		ref1=<uid>	// sign
+	endif
+	if <ref1.p.z> < 26
+		ref1.nudgeup
+	endif
+	ref1.dialog d_store_sign
+	return 1
+
+ON=4
+	src.dialogclose d_store_sign
+	ref1=<src.account.tag.store>
+	if <src.isgm>
+		ref1=<uid>	// sign
+	endif
+	if <ref1.p.z> > 5
+		ref1.nudgedown
+	endif
+	ref1.dialog d_store_sign
+	return 1
+
+ON=2965 3140
+	src.dialogclose d_store_sign
+	ref1=<src.account.tag.store>
+	if <src.isgm>
+		ref1=<uid>	// sign
+	endif
+	ref1.dispid=<hval <argn>>
+	ref1.dialog d_store_sign
+	ref1.update
+	return 1
+
+on=5555 // change background
+	src.dialogclose d_store_sign
+	ref1=<src.account.tag.store>
+	if <src.isgm>
+		ref1=<uid>	// sign
+	endif
+	if <isempty <src.ctag.bg_gump>>
+		src.ctag.bg_gump = 1
+	else
+		src.ctag.bg_gump += 1
+		if <src.ctag.bg_gump> > <def.bg_gump_max>
+			src.ctag.bg_gump=
+		endif
+	endif
+	ref1.dialog d_store_sign
+	return 1
+
+[EOF]

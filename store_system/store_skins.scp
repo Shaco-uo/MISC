@@ -1,0 +1,118 @@
+[ITEMDEF i_store_slot_increase]
+DEFNAME=i_store_slot_increase
+ID=i_deed
+NAME=Store Upgrade
+TYPE=t_script
+WEIGHT=1.0
+VALUE=500
+tag.itemlevel=0
+tag.amount=2
+CATEGORY=Custom
+SUBSECTION=Test_Vendor
+DESCRIPTION=Store Upgrade
+ON=@ClientTooltip
+	ADDCLILOC 1070722,<def.bfont_lyellow>+<tag0.amount> <def.bfont_white>Item Slots
+
+ON=@Dclick
+	if <topobj>!=<src> || <isinbank>
+		src.sysmessage @,,1 You can't reach <name>.
+		return 1
+	endif
+	if <isempty <src.account.tag.store>>
+		src.sysmessage @,,1 You don't have a store.
+		return 1
+	endif
+	ref1=<src.account.tag.store>	// sign
+	if <ref1.dmore2h> < 20
+		ref1.more2h += <tag0.amount>
+		src.sysmessage @52,,1 You store amount of items per vendor has increased by <tag0.amount>.
+		ref1.resendtooltip
+		remove
+	endif
+	return 1
+
+[ITEMDEF i_store_skin_slime]
+DEFNAME=i_store_skin_slime
+ID=i_deed
+NAME=Slime
+TYPE=t_script
+WEIGHT=1.0
+VALUE=500
+TEVENTS=t_store_skin
+tag.skin=c_slime,Golden Slime,0bae,"Very Slippery"
+CATEGORY=Custom
+SUBSECTION=Test_Vendor
+DESCRIPTION=Skin Slime
+
+[ITEMDEF i_store_skin_man]
+DEFNAME=i_store_skin_man
+ID=i_deed
+NAME=Human Male
+TYPE=t_script
+WEIGHT=1.0
+VALUE=500
+TEVENTS=t_store_skin
+tag.skin=c_store_vendor_m,Human Male,colors_skin,"Can equip items"
+CATEGORY=Custom
+SUBSECTION=Test_Vendor
+DESCRIPTION=Skin Human (M)
+
+[ITEMDEF i_store_skin_woman]
+DEFNAME=i_store_skin_woman
+ID=i_deed
+NAME=Human Female
+TYPE=t_script
+WEIGHT=1.0
+VALUE=500
+TEVENTS=t_store_skin
+tag.skin=c_store_vendor_f,Human Female,colors_skin,"Can equip items"
+CATEGORY=Custom
+SUBSECTION=Test_Vendor
+DESCRIPTION=Skin Human (F)
+
+[ITEMDEF i_store_skin_ratman]
+DEFNAME=i_store_skin_ratman
+ID=i_deed
+NAME=Ratman
+TYPE=t_script
+WEIGHT=1.0
+VALUE=700
+TEVENTS=t_store_skin
+tag.skin=c_ratman,Ratman,0,"A rat seller"
+CATEGORY=Custom
+SUBSECTION=Test_Vendor
+DESCRIPTION=Skin Ratman
+
+[CHARDEF c_store_vendor_m]
+NAME=#names_humanmale
+ID=c_man
+ICON=c_man
+CAN=mt_equip|mt_usehands|mt_nonmover
+DESIRES=i_gold
+TEVENTS=e_store_vendor_equip
+ON=@Create
+	NPC=brain_human
+	COLOR=colors_skin
+	STR=100
+	ALLSKILLS=0.0
+	ITEMNEWBIE=random_male_hair
+	COLOR=colors_hair
+	ITEMNEWBIE=random_facial_hair,R4
+	COLOR=match_hair
+
+[CHARDEF c_store_vendor_f]
+NAME=#names_humanfemale
+ID=c_woman
+ICON=c_woman
+CAN=mt_equip|mt_usehands|mt_nonmover
+DESIRES=i_gold
+TEVENTS=e_store_vendor_equip
+ON=@Create
+	NPC=brain_human
+	COLOR=colors_skin
+	STR=100
+	ALLSKILLS=0.0
+	ITEMNEWBIE=random_female_hair
+	COLOR=colors_hair
+
+[EOF]

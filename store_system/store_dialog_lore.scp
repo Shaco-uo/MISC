@@ -1,0 +1,140 @@
+[DIALOG d_item_lore]
+300,200
+PAGE 0
+ref1=<src.ctag.item_lore>
+f_gumppic_dialog 46,30,320,290
+
+local.x=100
+local.y=80
+f_gumppic_dialog <eval <local.x>-40>,<eval <local.y>-35>,90,90
+f_center_icon <local.x>,<local.y>,<ref1.dispiddec>,<ref1.color>	// ITEM ICON
+// tilepichue <local.x> <local.y> <ref1.dispiddec> <ref1.color>	// ITEM ICON
+// ************************************************
+dhtmlgump 82 42 240 20 0 0 <def.center><def.bfont_size7><ref1.f_get_fontcolor><ref1.name>	// item name
+// *********************************************
+local.y=140
+local.x=57
+dhtmlgump <eval <local.x>-0> <eval <local.y>+1> 94 20 0 0 <def.center><def.bfont_lcyan>Properties // PROPERTIES
+local.y += 22
+if <ref1.isweapon>
+	dhtmlgump <local.x> <local.y> 60 20 0 0 <def.bfont_size1><def.bfont_white>Dam
+	dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right><ref1.dam>
+	local.y += 15
+	dhtmlgump <local.x> <local.y> 60 20 0 0 <def.bfont_size1><def.bfont_white>Speed
+	dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right><ref1.speed>
+	local.y += 15
+	dhtmlgump <local.x> <local.y> 60 20 0 0 <def.bfont_size1><def.bfont_white>Type
+	if <ref1.type>==t_weapon_bow || <ref1.type>==t_weapon_xbow
+		dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right>Ranged
+	elif <ref1.layer>==2
+		dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right>Two-Handed
+	else
+		dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right>One-Handed
+	endif
+	local.y += 15
+	dhtmlgump <local.x> <local.y> 60 20 0 0 <def.bfont_size1><def.bfont_white>Skill
+	dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right><serv.skill.<ref1.skill>.name>
+	local.y += 15
+endif
+if <ref1.isarmor>	
+	dhtmlgump <local.x> <local.y> 60 20 0 0 <def.bfont_size1><def.bfont_white>Armor
+	dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right><ref1.ar>
+	local.y += 15
+endif
+if <ref1.type>==t_jewelry
+	dhtmlgump <local.x> <local.y> 60 20 0 0 <def.bfont_size1><def.bfont_white>Type
+	if <ref1.layer>==10
+		dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right>Necklace
+	elif <ref1.layer>==14
+		dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right>Bracelet
+	elif <ref1.layer>==8
+		dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right>Ring
+	endif
+	local.y += 15
+endif
+if <ref1.hitpoints>
+	dhtmlgump <local.x> <local.y> 60 20 0 0 <def.bfont_size1><def.bfont_white>Durability
+	dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right><ref1.more1l>,<ref1.more1h>
+	local.y += 15
+endif
+dhtmlgump <local.x> <local.y> 60 20 0 0 <def.bfont_size1><def.bfont_white>Weight
+dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right><fval <ref1.weight>>
+local.y += 15
+dhtmlgump <local.x> <local.y> 60 20 0 0 <def.bfont_size1><def.bfont_white>Color
+dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right><ref1.color>
+local.y += 15
+if !<isempty <ref1.tag.itemlevel>>
+	dhtmlgump <local.x> <local.y> 60 20 0 0 <def.bfont_size1><def.bfont_white>Level
+	dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right><ref1.tag.itemlevel>
+	local.y += 15
+endif
+dhtmlgump <local.x> <local.y> 60 20 0 0 <def.bfont_size1><def.bfont_white>Value
+dhtmlgump <eval <local.x>+16> <local.y> 80 20 0 0 <def.bfont_size1><def.bfont_lyellow><def.div_right><f_numformat <ref1.value>>
+// *********************************************
+// ********************************************* LEFT PANEL
+local.y=68
+local.x=160		// left text (success chance)
+local.x1=<eval <local.x>+32> 	// right text (amount%)
+gumppictiled <eval <local.x>+0> <eval <local.y>+18> 183 1 <def.store_gump_separator>
+dhtmlgump <local.x> <local.y> 150 20 0 0 <def.bfont_white><def.bfont_size1>Crafting Chance
+dhtmlgump <local.x1> <local.y> 150 20 0 0 <def.div_right><def.bfont_size1><def.bfont_lyellow><fval <ref1.craftsuccesschance <ref1.baseid>>>%
+local.y += 20
+// *******************************************
+if (strmatch("*t_masonry_tool*","<ref1.skillmake>"))
+   dhtmlgump <local.x> <local.y> 150 20 0 0 <def.bfont_white>Need Masonry Tool
+   local.y += 15
+endif
+if (strmatch("*t_glassblowing*","<ref1.skillmake>"))
+   dhtmlgump <local.x> <local.y> 150 20 0 0 <def.bfont_white>Need Glassblowing Tool
+   local.y += 15
+endif
+args = <ref1.skillmake>
+for 1 <argv>
+   if (<ref1.skillmake.<local._for>.key>==i_pen_and_ink) 
+      dhtmlgump <local.x> <local.y> 150 20 0 0 <def.bfont_white>Need Pen and ink
+	  local.y += 15
+   endif
+	IF !( (<ref1.skillmake.<local._for>.key>==t_carpentry) || (<ref1.skillmake.<local._for>.key>==t_tinker_tools) || (<ref1.skillmake.<local._for>.key>==t_cooking) || (<ref1.skillmake.<local._for>.key>==t_sewing_kit) || (<ref1.skillmake.<local._for>.key>==t_mortar) )
+      if (<serv.skill.<ref1.skillmake.<local._for>.key>>)
+		dhtmlgump <local.x> <local.y> 150 20 0 0 <def.bfont_size1><def.bfont_white><serv.skill.<ref1.skillmake.<local._for>.key>.name>
+		dhtmlgump <local.x1> <local.y> 150 20 0 0 <def.div_right><def.bfont_size1><def.bfont_lyellow><fval <ref1.skillmake.<local._for>.val>>
+		local.y += 15
+      endif
+   endif
+endfor
+// *********************************************
+local.y += 5
+gumppictiled <eval <local.x>+0> <eval <local.y>+18> 183 1 <def.store_gump_separator>
+dhtmlgump <local.x> <local.y> 150 20 0 0 <def.bfont_lcyan>Resources // RESOURCES
+local.y += 20
+args = <ref1.resmake>
+for 1 <argv>
+	dhtmlgump <local.x> <local.y> 150 20 0 0 <def.bfont_size1><def.bfont_white><serv.itemdef.<ref1.resources.<local._for>.key>.name>
+	dhtmlgump <local.x1> <local.y> 150 20 0 0 <def.div_right><def.bfont_size1><def.bfont_lyellow><ref1.resources.<local._for>.val>
+	local.y += 15
+endfor
+// ********************************************
+if !<isempty <ref1.tag.duration>> || !<isempty <ref1.tag.info>>
+	local.y += 5
+	gumppictiled <eval <local.x>+0> <eval <local.y>+18> 183 1 <def.store_gump_separator>
+	dhtmlgump <local.x> <local.y> 150 20 0 0 <def.bfont_lcyan>Info	// INFO
+	local.y += 20
+endif
+if !<isempty <ref1.tag.duration>>
+	dhtmlgump <local.x> <local.y> 150 20 0 0 <def.bfont_size1><def.bfont_lyellow>Effect Duration
+	dhtmlgump <local.x1> <local.y> 150 20 0 0 <def.div_right><def.bfont_size1><def.bfont_lyellow><f_time_left_t <eval <uid.<ref1>.tag.duration>>>
+	local.y += 15
+endif
+if !<isempty <ref1.tag.info>>
+	dhtmlgump <local.x> <local.y> 180 80 0 0 <def.bfont_size1><def.bfont_white><ref1.tag.info>
+	// local.y += 15	// end
+endif
+
+[DIALOG d_item_lore button]
+ON=0
+	src.dialogclose d_item_lore
+	src.ctag.item_lore=
+	src.ctag.craft.skill=
+	return 1
+
+[eof]

@@ -1,0 +1,111 @@
+[DIALOG d_store_vendor_skin]
+300,200
+
+PAGE 0
+ref1=<getargv 0 <src.ctag.vendor>>  				// sign uid
+ref2=<getargv 1 <src.ctag.vendor>> 					// pack
+local.v=<getargv 2 <src.ctag.vendor>> 				// vendor #
+local.h = 104 + <eval <ref1.tag0.skins_used>*26>	// dialog height
+
+f_gumppic_dialog 152,42,294,<local.h>
+dhtmlgump 164 52 262 20 0 0 <def.center><def.bfont_size7><def.bfont_white><ref1.name> <def.bfont_size4><def.bfont_lyellow>Vendor <local.v> Skin <def.bfont_lgray>(<ref1.tag0.skins_used>/<ref1.tag0.max_skins>)
+dhtmlgump 350 <eval <local.h>+16> 80 25 0 0 <def.div_right><def.bfont_lyellow><def.bfont_size4>$<def.bfont_white><f_numformat <ref1.tag0.gold>>
+tooltip 3000153										// Gold Avail
+
+PAGE 1
+local.y=100
+for 1 <ref1.tag0.max_skins>
+if !<isempty <ref1.tag.skin_<local._for>>>
+	button 162 <eval <local.y>-4> <def.store_list_button> 1 0 <local._for>    			// select skin
+	dhtmlgump 166 <local.y> 258 20 0 0 <def.center><def.bfont_size4><qval <local._for>==<src.ctag.store_option>?<def.bfont_lcyan>:<def.bfont_lgray>><getargv 1 <ref1.tag.skin_<local._for>>>	// name
+	// **** RIGHT PANEL
+	if !<isempty <src.ctag.store_option>> && <local._for>==<src.ctag.store_option>
+		f_gumppic_dialog2 433,<eval <local.y>-20>,186,86									// background
+		button 422 <eval <local.y>+1> <def.store_back_button> 1 0 0						// back / EXIT
+		if <ref2.tag0.skin_current>!=<src.ctag.store_option>
+			button 536 <eval <local.y>-1> <def.store_go_button> 1 0 5001				// APPLY
+			dhtmlgump 570 <eval <local.y>+2> 60 20 0 0 <def.bfont_size4><def.bfont_white>Apply
+		else
+			dhtmlgump 536 <eval <local.y>+2> 60 20 0 0 <def.bfont_size4><def.bfont_lgray>Current
+		endif
+		dhtmlgump 570 <eval <local.y>+29> 60 20 0 0 <def.bfont_size4><def.bfont_dred>Delete
+		button 536 <eval <local.y>+26> <def.store_remove_button> 1 0 5002				// DELETE
+		// ************	 ICON
+		// f_gumppic_dialog2 438,<eval <local.y>-23>,90,90								// square frame
+		local.icon=<serv.chardef.<getargv 0 <ref1.tag.skin_<src.ctag.store_option>>>.icon>
+		local.color=<getargv 2 <ref1.tag.skin_<src.ctag.store_option>>>
+		f_center_icon 478,<eval <local.y>+12>,<local.icon>,<dlocal.color>
+		// tilepichue 478 <eval <local.y>+12> <local.icon> <dlocal.color>
+	endif
+local.y += 26
+endif
+endfor
+
+[DIALOG d_store_vendor_skin prebutton]
+if <argn1> > 0
+	ref1=<getargv 0 <src.ctag.vendor>>  	// sign uid
+	local.v=<getargv 2 <src.ctag.vendor>> 	// vendor #
+	ref2=<ref1.tag.vendor_<local.v>>		// vendor uid
+	if <ref2.isvalid> && <src.room>!=<ref2.room>
+		src.sysmessage @31,,1 <ref2.name> is too far away.
+		ref1.dialog d_store_vendor_skin
+		return 1
+	endif
+endif
+src.dialogclose d_store_vendor_skin
+
+[DIALOG d_store_vendor_skin button]
+ON=0
+	ref1=<getargv 0 <src.ctag.vendor>> 		// sign
+	if !<isempty <src.ctag.store_option>>
+		src.ctag.store_option=
+		ref1.dialog d_store_vendor_skin
+	else
+		local.v=<getargv 2 <src.ctag.vendor>>   // vendor #
+		local.p=<qval <local.v><=2?2:3>		// page #
+		src.ctag.vendor=
+		ref1.dialog d_store_owner <local.p>
+	endif
+	return 1
+
+ON=1 10
+	src.ctag.store_option=<argn1>
+	dialog d_store_vendor_skin
+	return 1
+
+on=5001	// APPLY SKIN
+    ref1=<getargv 0 <src.ctag.vendor>>  	// sign uid
+	ref2=<getargv 1 <src.ctag.vendor>> 		// pack
+    local.v=<getargv 2 <src.ctag.vendor>> 	// vendor #
+    ref2.tag.skin_current=<src.ctag.store_option>
+    serv.f_add_vendor <local.v>,<ref1>
+    src.ctag.store_option=
+    dialog d_store_vendor_skin
+	return 1
+
+on=5002	// REMOVE SKIN
+    ref1=<getargv 0 <src.ctag.vendor>>  	// sign uid
+	ref2=<getargv 1 <src.ctag.vendor>> 		// pack
+	serv.f_remove_all_vendors <ref1>
+	if <ref1.tag0.skins_used>==1
+		src.sysmessage @,,1 You cannot remove more skins from your store.
+		ref1.dialog d_store_vendor_skin <local.p>
+		return 1
+	endif
+	for 1 4	// change skin if removed is being used by a vendor pack
+	ref3=<ref1.tag.vendor_pack_<local._for>>
+	if <ref3.isvalid> && <ref3.tag0.skin_current>==<src.ctag.store_option> // removing current
+		for 1 <ref1.tag0.skins_used>
+		if !<isempty <ref1.tag.skin_<local._for>>> && <src.ctag.store_option>!=<local._for>
+			ref3.tag.skin_current=<local._for>
+		endif
+		endfor
+	endif
+	endfor
+	ref1.tag0.skins_used -= 1
+	ref1.tag.skin_<src.ctag.store_option>=
+	src.ctag.store_option=
+    ref1.dialog d_store_vendor_skin
+	return 1
+
+[EOF]
