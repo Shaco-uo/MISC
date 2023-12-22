@@ -1,3 +1,4 @@
+* Dialogs require defs_dialog_bg.scp 
 How to Use
 1. House Store: Create i_deed_vendor_house
 2. Market Store
