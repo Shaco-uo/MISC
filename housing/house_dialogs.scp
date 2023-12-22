@@ -169,7 +169,7 @@ if (<isowner <src>>) || (<GetCoownerPos <src>> >= 0) || (<src.isgm>)
     button 7 240 4005 4007 1 8 11
     dtext 47 240 0480 View House Friends 
     button 7 260 4005 4007 1 0 19
-    dtext 47 260 0480 Add a Friend 
+    dtext 47 260 0480 Add a Friend
     button 7 280 4005 4007 1 18 33      // bad button
     dtext 47 280 0480 Remove a Friend
     button 7 300 4005 4007 1 0 20

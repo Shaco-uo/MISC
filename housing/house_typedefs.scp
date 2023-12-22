@@ -23,6 +23,7 @@ else
     endif
 endif
 if <link.isvalid>
+	name=<region.name>
 	link.REGION.EVENTS=+r_house_system
 	link.region.flags=region_flag_nodecay|region_flag_nobuilding|region_antimagic_recall_in|region_flag_insta_logout
 	resendtooltip 1,0
@@ -53,8 +54,9 @@ if <link.tag0.demolition>
 elif <link.region.tag0.forsale>
     addcliloc 1070722, FOR SALE <link.dtag0.price>gp
 endif
+addcliloc 1042971,<link.name>
 addcliloc 1061639,<name>
-addcliloc 1061640,<uid.<more1>.name>
+addcliloc 1061640,<link.owner.name>
 if <link.housetype>==<def.house_guild>
     addcliloc 1042971,[<uid.<tag0.is_guild>.abbrev>] Guild House
 endif

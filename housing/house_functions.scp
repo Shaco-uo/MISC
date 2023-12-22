@@ -537,10 +537,10 @@ if !(<argo.houses> < <serv.MaxHousesAccount>)
 endif
 SRC.SYSMESSAGE @,,1 Please wait until <argo.name> accept the trade.
 if (<FINDTYPE.t_eq_trade_window>)
-	SYSMESSAGE @,,1 Baska birisine evi transfer etmeye calisirken bir baskasina da transfer edemezsınız. //FIXME: translate to english!
+	SYSMESSAGE @,,1 You already have a trade window open.
 	return 1
 elif (<SRC.FINDTYPE.t_eq_trade_window>)
-	SRC.SYSMESSAGE @,,1 Baska birisine evi transfer etmeye calisirken bir baskasina da transfer edemezsınız. //FIXME: translate to english!
+	SRC.SYSMESSAGE @,,1 You already have a trade window open.
 	return 1
 endif
 SRC.EVENTS=+e_house_transfer
