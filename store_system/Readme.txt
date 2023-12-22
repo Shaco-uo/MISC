@@ -1,8 +1,8 @@
 * Dialogs require defs_dialog_bg.scp 
+- Add store_system/ folder to spheretables.scp.
 How to Use
 1. House Store: Create i_deed_vendor_house
 2. Market Store
-- Add store_system/ folder to spheretables.scp. Before the maps are loaded
 - This system needs a roomdef with the following tags.
 
 	[ROOMDEF a_market_store_1]
@@ -18,7 +18,7 @@ How to Use
 	tag.max_secure=1
 	tag.store_price=500000
 
-- Add region event in regiontypes.scp
+- Add region event in regiontypes.scp (must be loaded before map files)
 
 	[REGIONTYPE r_store_system]
 	ON=@Exit
