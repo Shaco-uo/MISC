@@ -23,9 +23,10 @@ else
     endif
 endif
 if <link.isvalid>
-	name=<region.name>
-	link.REGION.EVENTS=+r_house_system
+	name=New House
+	link.region.events=+r_house_system
 	link.region.flags=region_flag_nodecay|region_flag_nobuilding|region_antimagic_recall_in|region_flag_insta_logout
+	link.tag.buildon=<serv.rtime>
 	resendtooltip 1,0
 endif
 
@@ -135,6 +136,7 @@ ON=@ContextMenuSelect
 		ref1=<region.uid>
 		ref1.unlockitem <uid>
 		tag.lockedby=
+		message @,,2 501726	// No longer locked down!
 		if !<isempty <tag.decay>>
 			tag.decay=
 			timer <eval <serv.DecayTimer>*60>
@@ -304,12 +306,12 @@ ON=@ContextMenuSelect
 		return 1
 	endif
 	if <argn> == 700
-		ref1=<uid>
 		dialogclose d_house_secure
-		ref1.sdialog d_house_secure
+		sdialog d_house_secure
 	elif <argn> == 701
 		ref1=<region.uid>
 		ref1.release <uid>
+		message @,,2 501718	// No longer secure!
 		if !<isempty <tag.decay>>
 			tag.decay=
 			timer <eval <serv.DecayTimer>*60>
@@ -319,9 +321,9 @@ ON=@ContextMenuSelect
 	endif
 
 ON=@PickUp_ground
-	if (!<src.IsGM>)
-		return 1
-	endif
+if (!<src.IsGM>)
+	return 1
+endif
 
 ON=@DClick
 if (<f_house_can_access>)
@@ -501,7 +503,6 @@ endif
 ON=@Exit	
 	src.dialogclose d_house_menu 
 	src.events -e_house_player_events	
-
 
 //////////////////////////////////////////////////////////////////////////////////////events///////////////////////////////////////////////////
 [EVENTS e_house_transfer]

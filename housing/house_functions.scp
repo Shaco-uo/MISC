@@ -86,45 +86,39 @@ return <def.house_access_none>
 [FUNCTION f_house_render_list]
 ref1 = <owner>
 local.list = <argv[0]>
-dhtmlgump 125 130 150 20 0 0 <def.bfont_lgray><local.list> List
-dhtmlgump 230 130 150 20 0 0 <def.bfont_lgray><<local.list><qval (strmatch(*access*,<local.list>))?es:s>> / 10
+dhtmlgump 125 130 150 20 0 0 <def.bfont_lslateblue><def.bfont_size7><def.center><local.list> List <<local.list><qval (strmatch(*access*,<local.list>))?es:s>> / <def.hs_max_co_owners>
+dhtmlgump 230 130 150 20 0 0 <def.bfont_lgray>
 if (strmatch(*ban*,<local.list>))
 	local.fontcolor = <def.bfont_lred>
 elif (strmatch(*access*,<local.list>))
-	local.fontcolor =  <def.bfont_green>
+	local.fontcolor =  <def.bfont_lgray>
 else
-	local.fontcolor = <def.bfont_lgray>
+	local.fontcolor = <def.bfont_white>
 endif
+local.x=7
 local.y=170
 if <<local.list><qval (strmatch(*access*,<local.list>))?es:s>>
 	for  0 <eval <<local.list><qval (strmatch(*access*,<local.list>))?es:s>>-1>
-		if (<local._for> < 11)	
-			local.txt = 57
-			local.btn = 7
-		else
-			local.txt = 250
-			local.btn = 200
-		endif
-		if (<local._for>==11)
-			local.y=170
-		endif
-		if ((<isowner <src>>) || (<get<local.list>pos <src>> >= 0) || (<src.isgm>)) && ((strmatch(*coowner*,<local.list>)) || (strmatch(*friend*,<local.list>)))
-			if (<<local.list>.<local._for>>==<src.uid>) || (<isowner <src>>) || (<src.isgm>)
-				dhtmlgump 57 <local.y> 120 20 0 0 <local.fontcolor><<local.list>.<local._for>.name>
-				if <argv[1]>
-					button 7 <local.y> 4017 4018 1 0 <eval (100+<local._for>)>
-				endif
-			else
-				dhtmlgump 57 <local.y> 120 20 0 0 <local.fontcolor><<local.list>.<local._for>.name>
-			endif
-		elif ((<isowner <src>>) || (<GetCoownerPos <src>> >= 0) || (<src.isgm>)) && ((strmatch(*friend*,<local.list>)) || (strmatch(*access*,<local.list>)) ||(strmatch(*ban*,<local.list>)))
-			dhtmlgump 57 <local.y> 120 20 0 0 <local.fontcolor><<local.list>.<local._for>.name>
-			// serv.log a
+	if ((<isowner <src>>) || (<get<local.list>pos <src>> >= 0) || (<src.isgm>)) && ((strmatch(*coowner*,<local.list>)) || (strmatch(*friend*,<local.list>)))
+		if (<<local.list>.<local._for>>==<src.uid>) || (<isowner <src>>) || (<src.isgm>)
+			dhtmlgump <eval <local.x>+38> <eval <local.y>+3> 120 20 0 0 <local.fontcolor><<local.list>.<local._for>.name>
 			if <argv[1]>
-				button 7 <local.y> 4017 4018 1 0 <eval (100+<local._for>)>
+				button <local.x> <local.y> 4017 4018 1 0 <eval (100+<local._for>)>
 			endif
-		endif	
+		else
+			dhtmlgump <eval <local.x>+38> <eval <local.y>+3> 120 20 0 0 <local.fontcolor><<local.list>.<local._for>.name>
+		endif
+	elif ((<isowner <src>>) || (<GetCoownerPos <src>> >= 0) || (<src.isgm>)) && ((strmatch(*friend*,<local.list>)) || (strmatch(*access*,<local.list>)) ||(strmatch(*ban*,<local.list>)))
+		dhtmlgump <eval <local.x>+38> <eval <local.y>+3> 120 20 0 0 <local.fontcolor><<local.list>.<local._for>.name>
+		if <argv[1]>
+			button <local.x> <local.y> 4017 4018 1 0 <eval (100+<local._for>)>
+		endif
+	endif
 	local.y += 20
+	if <local.y> >= 370
+		local.x += 124
+		local.y = 170
+	endif
 	endfor
 endif
 
@@ -282,7 +276,12 @@ if <def.hs_hs_secure_locks_limit>
 	endif
 endif
 if (<argo.isitem> && <argo.region.uid>==<ref1>)
+	if <argo.isevent.ei_house_lockdown>
+		argo.message @,,2 501719	// This is already locked down!
+		return
+	endif
 	ref1.lockitem <argo>
+	argo.message @,,2 501721 	// Locked down!
 	if ((<argo.attr>&attr_decay) && (<argo.timer> >= 0))
 		argo.tag.decay=1
 		argo.timer -1
@@ -291,6 +290,7 @@ if (<argo.isitem> && <argo.region.uid>==<ref1>)
 			argo.tag.lockedby <uid>
 		endif
 	endif
+	argo.resendtooltip 1,0
 endif
  
 [function f_house_item_unlock]
@@ -300,6 +300,7 @@ if !(<ref1.IsOwner <uid>> || (<ref1.GetCoownerPos <uid>> >= 0) || (<ref1.GetFrie
 endif
 if (<ref1.GetSecuredContainerPos <argo>> = 0) && ((<ref1.IsOwner <uid>>) || (<IsGM>))
 	ref1.release <argo>
+	argo.message @,,2 501718	// No longer secure!
 elif (<argo.isitem> && <argo.region.uid>==<ref1>)
 	if (<ref1.GetFriendPos <uid>> >= 0) && (<argo.tag0.lockedby> != <uid>)
 		sysmessage @32,,1 Friends can only unlock items if they are locked them.
@@ -307,6 +308,7 @@ elif (<argo.isitem> && <argo.region.uid>==<ref1>)
 	endif
 	ref1.unlockitem <argo>
 	tag0.lockedby
+	argo.message @,,2 501726	// No longer locked down!
 endif
 if (<argo.tag0.decay>)
 	argo.tag.decay
@@ -331,6 +333,7 @@ if (<argo.isitem> && <argo.region.uid>==<ref1>)
 	if (<argo.f_isContainer>)
 		ref1.secure <argo>
 		argo.tag.access = 1
+		argo.message @,,2 501716	// Secure!
 		if ((<argo.attr>&attr_decay) && (<argo.timer> >= 0))
 			argo.tag.decay=1
 			argo.timer -1
@@ -338,7 +341,7 @@ if (<argo.isitem> && <argo.region.uid>==<ref1>)
 		endif
 		argo.resendtooltip 1
 	else
-		sysmessage @32,,1 You can only secure containers.
+		sysmessage @,,2 501712. 	// This isn't a container!
 	endif
 endif
 

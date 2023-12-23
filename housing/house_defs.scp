@@ -36,7 +36,7 @@ hs_placement_check_roads    1
 	
 //vendor settings
 house_list_vendors	0 	// set to 1 to allow players on house list to place vendors, 0 = owner only
-house_sell			0   //set to 0 if you dont want to allow sell houses.
+house_sell			1   //set to 0 if you dont want to allow sell houses.
 
 //Set these to the body types for vendors in your script
 vendor_deed_id		i_deed_vendor
