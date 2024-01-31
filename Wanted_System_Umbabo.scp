@@ -1,0 +1,127 @@
+[EVENTS e_wanted_umbabo]	
+ON=@Kill
+	ref1 = <uid>
+	if <argo.baseid> == c_umbabo && !<ref1.findid.i_head_umbabo.isvalid>
+        trysrc <ref1> f_get_item i_head_umbabo,0
+        trysrc <ref1> message @,,1 Umbabo's Head 1/1
+        trysrc <ref1> message @52,,1 Mission Complete
+        sound 0f7
+        src.events -e_wanted_umbabo
+	endif
+
+[ITEMDEF i_wanted_umbabo_cd]
+NAME=Wanted Umbabo CD
+ID=i_memory
+TYPE=t_eq_script
+ON=@Equip
+    timer=<def.wntd_cd>
+ON=@Timer
+    remove
+    return 1
+
+[ITEMDEF i_head_umbabo]
+DEFNAME=i_head_umbabo
+ID=i_flesh_head
+NAME=Umbabo's Head
+TYPE=t_script
+WEIGHT=1.0
+TEVENTS=e_soulbound
+CATEGORY=Custom Quest
+SUBSECTION=Wanted
+DESCRIPTION=Pumbaba
+ON=@Create
+	COLOR=05a2
+	attr=attr_questitem|04
+	tag.nameloc.hue=e0ffff // lcyan
+ON=@Dclick
+	src.sysmessage @,,1 Turn in at Umbabo Wanted Poster.
+	return 1
+
+[ITEMDEF i_wanted_umbabo_wall]
+DEFNAME=i_wanted_umbabo_wall
+ID=i_poster_wanted_wall
+NAME=Umbabo
+TYPE=t_script
+WEIGHT=15.0
+FLIP=1
+VALUE=10
+TEVENTS=t_wanted_poster_wall
+tag.wanted=Umbabo
+CATEGORY=Custom Quest
+SUBSECTION=Wanted
+DESCRIPTION=Umbabo Poster Wall
+
+[ITEMDEF i_wanted_umbabo]
+DEFNAME=i_wanted_umbabo
+ID=i_poster_wanted
+NAME=Umbabo
+TYPE=t_script
+WEIGHT=1.0
+FLIP=1
+VALUE=10
+TEVENTS=t_wanted_poster,e_soulbound
+tag.wanted=Umbabo
+CATEGORY=Custom Quest
+SUBSECTION=Wanted
+DESCRIPTION=Umbabo Poster
+
+[CHARDEF c_umbabo]
+DEFNAME=c_umbabo
+ID=c_ettin_captain
+NAME=Umbabo
+SOUND=snd_monster_ettin1
+ICON=i_pet_ettin
+CAN=mt_walk|mt_run
+DAM=32,46
+ARMOR=35
+RESOURCES=8 i_ribs_raw,4 i_hide
+FOODTYPE=15 t_meat_raw
+DESIRES=i_gold,spk_orc
+TSPEECH=spk_orc
+MOVERATE=70
+// TEVENTS=e_unique,e_treasure2,e_bleed_attack,e_poison_immune,e_npc_dispel
+tag.Barding.Diff=105.1
+tag.SlayerGroup=Giant
+CATEGORY=Custom Quest
+SUBSECTION=Wanted
+DESCRIPTION=Umbabo
+ON=@Create
+    tag.nameloc.hue=ffcccc	// lred
+	title=Chief Ettin
+	color=098
+	NPC=brain_monster
+	FAME={100 200}
+	KARMA={-2000 -2999}
+	STR={690 790}
+	MAXHITS={890 1090}
+	DEX={145 165}
+	INT=10
+	PARRYING={60.0 85.0}
+	MAGICRESISTANCE={70.0 85.0}
+	TACTICS={75.0 90.0}
+    WRESTLING={100.0 115.0}
+ON=@CreateLoot
+	ITEM=loot_ettin_lord
+
+[TEMPLATE tm_reward_wanted_umbabo]
+CATEGORY=Templates Custom
+SUBSECTION=Wanted Reward
+DESCRIPTION=Umbabo
+CONTAINER=i_bag
+COLOR=55
+ITEM=i_potion_restore,{0 2}
+ITEM=i_potion_mana,{0 2}
+ITEM=random_food,{0 2}
+ITEM=random_weapon_all_normal
+color=0f8
+tag.nameloc.hue=d4f2d4   // gwhite
+FUNC=f_setbonus_physical_dam 5
+FUNC=f_setbonus_slayer Giant,12
+ITEM={ i_pet_ettin 1 0 50 }
+tag.nameloc.hue=d4f2d4  // gwhite
+NAME=Umbabo Slayer
+type=t_statue_wanted
+tag.sound=367
+FUNC=f_set_date
+
+[EOF]

@@ -1,0 +1,294 @@
+[DEFNAME wanted_system] // tag.wanted=Umbabo
+wntd_cd                 36000       // 10 hrs cooldown
+wntd_reward_qp          3           // quest points reward 0=off
+
+wntd_dlg_bg             2520        // 1579 // dialog background
+wntd_dlg_div            9675        // dialog div gumppic
+wntd_dlg_btn_1          1121 1122   // 2117 2118    buttons
+bfont_lbrown		    <basefont color="#eed08c">	//  brown book
+bfont_brown			    <basefont color="#715d31">	//  brown book
+bfont_dbrown		    <basefont color="#42361c">	//  brown book
+
+wntd_npc_umbabo         c_umbabo,Umbabo,098,600,3000,Cyclops Valley,0 // 2726  // <baseid>,<name>,<color>,<time_limit(unused)>,<gold_reward>,<region_name>,<custom gump 0=use tilepichue> // argv=6
+wntd_npc_umbabo_loc     5168,2917,0     // npc loc
+wntd_npc_umbabo_xy      204 220         // tilepichue icon centered x,y
+wntd_npc_umbabo_txt     Journey to Cyclops Valley and collect the head of Umbabo the Ettin. A mighty Giant Slayer weapon, a pouch of gold, and assorted treasures await the brave soul who claims victory.
+
+[FUNCTION f_drop_wntd_mission]  // src.f_drop_wntd_mission <tag.wanted>
+local.npc=<args>     // umbabo
+if !<isempty <src.tag.wanted_<local.npc>>>
+	src.f_remove_linked i_wanted_<local.npc>        // remove poster
+    src.f_remove_linked i_head_<local.npc>          // remove poster
+	src.sysmessage @,,1 You abandon the mission.
+	src.sound 1459   					            // quest_abandon
+	src.tag.wanted_<local.npc>=
+	src.events -e_wanted_<local.npc>	            // event removal
+	src.dialogclose d_wanted_main
+else
+	src.sysmessage @,,1 You are not on this mission.
+endif
+
+[FUNCTION f_get_wntd_mission]   // src.f_get_wntd_mission <uid>,<tag.wanted>
+ref1=<argv[0]>                  // sign
+local.npc=<argv[1]>             // umbabo
+if <src.findid.i_wanted_<local.npc>_cd.isvalid>  // i_wanted_umbabo_delay //
+    local.t=<src.findid.i_wanted_<local.npc>_cd.timer>
+    src.sysmessage @,,1 You must wait <f_time_left_t <local.t>> to repeat this mission.
+    return 1
+endif
+if !<isempty <src.tag.wanted_<local.npc>>>
+	src.sysmessage @,,1 You already have this mission.
+	dialog d_wanted_main
+	return 1
+endif
+src.tag.wanted_<local.npc>=<ref1.p>
+src.events=+e_wanted_<local.npc> // e_wanted__umbabo //
+src.sysmessage @,,1 Deliver <local.npc>'s Head to the wanted poster. 
+src.message @55,,1 Mission Accepted
+src.sound 1460   // quest_accept
+src.newitem=i_wanted_<local.npc>
+new.link=<src>
+new.bounce <src>
+return 1
+
+[FUNCTION f_wanted_track]   // src.f_wanted_track <tag.wanted>
+local.npc=<args>    // umbabo
+args=<def.wntd_npc_<local.npc>>
+if <src.findid.i_head_<local.npc>.isvalid>
+	src.<qval <src.isgm> ? go:arrowquest> <src.tag.wanted_<local.npc>>
+    src.sysmessage @,,1 Turn in at sign.
+else
+	src.<qval <src.isgm> ? go:arrowquest> <def.wntd_npc_<local.npc>_loc>
+    src.message @,,1 Tracking <local.npc>...
+endif
+
+[FUNCTION f_wntd_reward]
+local.npc=<args> // Umbabo
+if <isempty <src.tag.wanted_<local.npc>>>
+	src.sysmessage @,,1 You do not have this mission.
+	dialog d_wanted_main
+	return 1
+endif
+
+if !<src.findid.i_head_<local.npc>.isvalid>
+	src.sysmessage @,,1 You have not completed this mission.
+	dialog d_wanted_main
+	return 1
+endif
+ref1=<src.findid.i_head_<local.npc>>
+if !(<ref1.link.isvalid> && <ref1.link>==<src>)
+    src.sysmessage @32,,1 <ref1.name> was not collected by you.
+    return 1
+endif
+src.f_remove_linked i_wanted_<local.npc>    // remove poster
+src.f_remove_linked i_head_<local.npc>    // remove head
+// ********** REWARDS
+if <def0.wntd_reward_qp>!=0 // qp reward
+    src.f_add_qp <def.wntd_reward_qp>
+endif
+src.newitem=tm_reward_wanted_<local.npc>  // TEMPLATE REWARD
+new.bounce <src>
+ref1=<new>
+serv.newitem=i_gold,<getargv 5 <def.wntd_npc_<local.npc>>>,<ref1>   // GOLD REWARD
+src.tag.wanted_<local.npc>=
+src.newitem=i_wanted_<local.npc>_cd  // ADD CD
+new.equip <src>
+
+[FUNCTION f_set_date]
+tag.date=<serv.rtime.format %d>.<serv.rtime.format %m>.<serv.rtime.format %y>
+
+[FUNCTION f_get_item]	// trysrc <ref1> f_get_item i_sword_viking,1 (1=equip, 0=to pack)
+src.newitem <argv[0]>
+new.link=<src>
+if <argv[1]>==0		
+	new.bounce <src>	// to backpack
+elif <argv[1]>==1
+	new.equip <src>		// equip
+endif
+
+[FUNCTION f_remove_linked] // usage: src.f_remove_linked i_poster_umbabo
+ref1=<uid>
+local.i=<args>
+forinstances <local.i>
+if <link>==<ref1>
+	remove
+endif
+endfor
+
+[FUNCTION f_add_qp]   // usage: src.f_add_qp 4
+LOCAL.QP=<args>
+ref1=<uid>
+IF !(<isnum <LOCAL.QP>>) || !(<LOCAL.QP> > 0) || (<LOCAL.QP> > 100)
+	serv.log F_ADD_QP Invalid value.
+	return 1
+endif
+ref1.tag0.quest_points += <LOCAL.QP>
+ref1.sysmessage @55,1,1 You receive <eval <LOCAL.QP>> Quest <qval (<eval <LOCAL.QP>>==1)?Point:Points> [<eval <ref1.tag.quest_points>> Total].
+
+// ************************************
+
+[TYPEDEF t_wanted_poster_wall]
+ON=@Create
+	attr=010
+	tag.nameloc.hue=ffc600  // lyellow
+
+ON=@ClientTooltip
+	ADDCLILOC 1070722,<def.bfont_lyellow>WANTED<def.bfont_white>
+
+ON=@Dclick 
+	if <distance> > 2
+		src.sysmessage @,,1 <name> is too far away.
+		return 1
+	endif
+    src.dialogclose d_wanted_main
+    dialog d_wanted_main
+    return 1
+
+[TYPEDEF t_wanted_poster]
+ON=@Create
+	attr=04|attr_questitem
+	tag.nameloc.hue=ffc600  // lyellow
+
+ON=@ClientTooltip
+	ADDCLILOC 1070722,<def.bfont_lyellow>WANTED<def.bfont_white>
+
+ON=@ContextmenuRequest
+		src.addcontextentry 667,1111937,020,055	// Show Tracker
+	endif
+ON=@ContextMenuSelect
+    if <link>!=<src>
+        src.sysmessage @,,1 This is not your poster.
+		return 1
+	endif
+    if <argn>==667
+        src.f_wanted_track <tag.wanted>
+    endif
+
+ON=@Dclick 
+	if <topobj>!=<src> || <isinbank>
+		src.sysmessage @,,1 You can't reach <name>.
+		return 1
+	endif
+    src.dialogclose d_wanted_main
+    dialog d_wanted_main
+    return 1
+
+[TYPEDEF t_statue_wanted]
+ON=@ClientTooltip
+	ADDCLILOC 1070722,<def.bfont_lyellow>Statue<def.bfont_white>
+    if !<isempty <tag.date>>  //  fecha premio
+        ADDCLILOC 1114778,<tag.date>
+    endif
+ON=@Dclick
+	if !<isempty <tag.sound>>
+		src.sound <eval <tag.sound>>
+	endif
+	return 1
+
+[ITEMDEF 05b94]
+DEFNAME=i_poster_wanted
+NAME=Wanted Poster
+TYPE=t_normal
+WEIGHT=1.0
+FLIP=0
+VALUE=10
+CATEGORY=Custom
+SUBSECTION=Items Base
+DESCRIPTION=Wanted Poster Base
+
+[ITEMDEF 05b95]
+DEFNAME=i_poster_wanted_wall
+NAME=Wanted Poster
+TYPE=t_normal
+WEIGHT=15.0
+FLIP=1
+VALUE=10
+DUPELIST=05b96
+CATEGORY=Custom
+SUBSECTION=Items Base
+DESCRIPTION=Wanted Poster Wall
+
+[ITEMDEF 05b96]
+DUPEITEM=05b95
+
+// ***************************
+[DIALOG d_wanted_main]
+200,200
+PAGE 0
+// resizepic 104 100 <def.wntd_dlg_bg> 226 294
+resizepic 120 154 1579 204 172
+gumppic 104 100 9899 0
+args=<def.wntd_npc_<tag.wanted>>
+
+PAGE 1
+button 300 408 5601 5605 0 2 0  // pg+
+local.x=140
+local.y=140
+if <argv[6]>!=0 // uses gumppic instead of tilepichue
+    gumppic <def.wntd_npc_<argv[1]>_xy> <argv[6]> <dargv[2]>    // icon
+else
+    // f_center_icon <eval <local.x>+50>,<eval <local.y>+44>,<eval <serv.chardef.c_ogre.icon>>,<dargv[2]>
+    tilepichue <def.wntd_npc_<argv[1]>_xy> <eval <serv.chardef.<argv[0]>.icon>> <dargv[2]>
+endif
+local.y=320
+gumppictiled <eval <local.x>-2> <eval <local.y>+19>  158 24 <def.wntd_dlg_div>
+dhtmlgump <local.x> <eval <local.y>+22> 156 20 0 0 <def.bfont_size7><def.h2><def.center><def.bfont_lbrown><STRTOUPPER <argv[1]>>
+
+if <src.findid.i_head_<argv[1]>.isvalid>
+    dhtmlgump 152 150 140 40 0 0 <def.bfont_size7><def.h2><def.center><def.bfont_red>MISSION COMPLETE
+    dhtmlgump  <eval <local.x>-2> <eval <local.y>+54> 74 20 0 0 <def.center><def.bfont_size4><def.h2><def.bfont_black>Complete
+    button <eval <local.x>-6> <eval <local.y>+52> <def.wntd_dlg_btn_1> 1 0 3  // complete  
+else
+    dhtmlgump <eval <local.x>+8> <eval <local.y>+44> 80 20 0 0 <def.bfont_size7><def.h2><def.bfont_brown>Bounty
+    dhtmlgump <local.x> <eval <local.y>+60> 80 20 0 0 <def.bfont_size7><def.h2><def.bfont_dbrown>$<f_numformat <argv[4]>>
+endif
+
+if <isempty <src.tag.wanted_<argv[1]>>>
+    dhtmlgump <eval <local.x>+86> <eval <local.y>+54> 74 20 0 0 <def.center><def.bfont_size4><def.h2><def.bfont_black>Accept
+    button <eval <local.x>+82> <eval <local.y>+52> <def.wntd_dlg_btn_1> 1 0 1  // accept
+else
+    dhtmlgump <eval <local.x>+86> <eval <local.y>+54> 74 20 0 0 <def.center><def.bfont_size4><def.h2><def.bfont_black>Abandon
+    button <eval <local.x>+82> <eval <local.y>+52> <def.wntd_dlg_btn_1> 1 0 2  // abandon
+endif
+
+PAGE 2
+button 124 408 5603 5607 0 1 0   // pg-
+local.x=140
+local.y=162
+local.y += 18
+dhtmlgump <local.x> <local.y> 156 20 0 0 <def.bfont_size4><def.h2><def.center><def.bfont_dbrown>Objective
+local.y += 20
+dhtmlgump <local.x> <local.y> 156 105 0 0 <def.bfont_size1><def.h2><def.center><def.bfont_brown><def.wntd_npc_<argv[1]>_txt>
+local.y += 138
+dhtmlgump <local.x> <local.y> 156 20 0 0 <def.bfont_size4><def.h2><def.center><def.bfont_dbrown>Location
+local.y += 18
+dhtmlgump <local.x> <local.y> 156 20 0 0 <def.bfont_size4><def.h3><def.center><def.bfont_brown><argv[5]>
+local.y += 18
+dhtmlgump <local.x> <local.y> 156 20 0 0 <def.bfont_size4><def.h2><def.center><def.bfont_brown><def.wntd_npc_<argv[1]>_loc>
+
+
+
+[DIALOG d_wanted_main prebutton]
+src.dialogclose d_wanted_main
+if <argn1> > 0 && <distance> > 3
+    src.sysmessage @,,1 You can't reach <name>.
+    return 1
+endif
+
+[DIALOG d_wanted_main button]
+ON=0
+    return 1
+ON=1
+    src.f_get_wntd_mission <uid>,<tag.wanted>
+    dialog d_wanted_main
+    return 1
+ON=2
+    src.f_drop_wntd_mission <tag.wanted>
+    dialog d_wanted_main
+    return 1
+ON=3
+    src.f_wntd_reward <tag.wanted>
+    dialog d_wanted_main
+    return 1
+
+[EOF]
