@@ -1,0 +1,802 @@
+[COMMENT credits]
+client list with private chat by Soulless
+v1.0 8:45 PM 8/8/2018 private messaging added
+rework by shaco 2024
+
+[DEFNAME online_menu_settings]
+online_private_messages		1 	//allow private messages to be sent
+online_notoriety_colors		1 	//show names of players as they are displayed overhead (blue, gray, red, etc)
+online_show_maxclients	  1 	//show the max number of clients logged in at once
+online_usetooltips        1   // 0=disabled
+online_message_staff		  1	  //allow players to msg people with higher plevels
+online_inbox_msg_max      30  // max entries in inbox, after this number will remove entry 0 (older)
+online_logmsg             1   // log pms on console
+// these are used by dialog & lists, do not edit
+online_list_0             Online
+online_list_1             Friends
+online_list_2             Blocked
+online_list_3             Requests
+online_list_4             Guild
+// online menu            // <btn_text>,<btn_id>,<btn_gumppic>,<btn_gumppic_color>,<tooltip_txt>
+online_menu_1             Friends,5004,4008 4010,Friend List
+online_menu_2             Blocked,5005,4020 4022,Blocked List
+online_menu_3             Requests,5006,4005 4007,Friend Requests
+online_menu_4             Guild,5013,4005 4007,Guild List
+online_menu_5             Status,5010,4005 4007,0 // message/icon/color in function
+
+// dialog settings
+online_dlg_bg             40000 // resizepic main background
+online_dlg_msg_icon       5411 // sidebuttons msg
+online_dlg_btn_bg         30546 // resizepic sidebuttons frame
+online_dlg_btn_close      2360 2361 // 3 4 //2640 2641 // 4017 4019 // 22150 22152
+online_dlg_btn_name       40031 40021
+online_btn_inbox          4029 4031 // sidebuttons
+online_btn_menu           4011 4013 // sidebuttons
+online_dlg_inbox_remove   4017 4019
+online_dlg_list_remove    1604 1606 // 4002 4004
+online_dlg_btn_add        1605 1606
+online_dlg_btn_send       40018 40028
+online_dlg_btn_right	   	9904 9903
+online_dlg_btn_left 	   	9910 9909
+online_bfont_title        <basefont COLOR="#ffffff">  // white
+online_bfont1             <basefont COLOR="#d3d3d3">  // lgray
+online_bfont2             <basefont COLOR="#ffffc8">  // lyellow
+online_bfont_red          <basefont COLOR="#ff0000">  // red
+online_bfont_gray         <basefont COLOR="#808080">  // gray
+online_bfont_blue         <basefont color="#3d76be">  // blue noto name
+
+[PLEVEL 1]
+online
+private
+inbox
+
+[EVENTS e_offline_message]
+ON=@Login
+  sysmessage @,,1 You have <serv.list.pm_<uid>_offline.count> new messages.
+  serv.list.pm_<uid>_offline.clear
+  events -e_offline_message
+
+[FUNCTION online]
+src.ctag.private_message_compose=
+src.ctag.list=
+src.ctag.online_menu=
+src.dialogclose d_online
+sdialog d_online
+
+[FUNCTION private]
+src.dialogclose d_online
+if <src.tag0.priv_msg>
+  src.tag.priv_msg=
+  src.sysmessage @77,,1 Private messages enabled.
+  return 1
+endif
+src.tag.priv_msg=1
+src.sysmessage @<def.fail>,,1 Private messages disabled.
+
+[FUNCTION inbox]
+if <src.tag0.priv_msg>
+  src.sysmessage @,,1 Private messages are disabled.
+  return 1
+endif
+src.ctag.private_message_compose=
+src.dialogclose d_pm_list
+sdialog d_pm_list
+
+[FUNCTION f_pm_isfriend]
+ref1=<args>
+if <serv.list.pm_<ref1>_friends.findelem <src>> != -1
+  return 1
+endif
+return 0
+
+[FUNCTION f_pm_isblocked]
+ref1=<args>
+if <serv.list.pm_<ref1>_blocked.findelem <src>> != -1
+  return 1
+endif
+return 0
+
+[FUNCTION f_pm_isrequest]
+ref1=<args>
+if <serv.list.pm_<ref1>_requests.findelem <src>> != -1
+  return 1
+endif
+return 0
+
+[FUNCTION f_online_count]
+for 0 <eval <serv.clients>-1>
+ref1=<serv.client.<dlocal._for>.uid>
+if !(<ref1.account.plevel> > <src.account.plevel> && <ref1.flags>&02000)
+  local.c ++
+endif
+endfor
+return <dlocal.c>
+
+[FUNCTION f_set_msg]
+local.m=<args>
+if <isempty <local.msg>>
+	local.msg="<local.m>"
+else
+	local.msg="<local.msg>, <local.m>"
+endif
+
+[FUNCTION f_set_tooltip]
+local.tl=<args>
+if <isempty <local.freq_tooltip>>
+	local.freq_tooltip="<local.tl>"
+else
+	local.freq_tooltip="<local.freq_tooltip>, <local.tl>"
+endif
+
+[FUNCTION f_online_tooltip]
+if <def0.online_usetooltips>!=0
+  tooltip <def.empty_cliloc>,@<args>
+endif
+
+[FUNCTION f_noto_bfontcolor] 	//returns characters notoriety color formated for gumps
+ref1=<args>
+if (<flags>&statf_invul) && (<isgm>) 
+  return <def.bfont_lpurple>
+elseif (<notogetflag <ref1>>==7)		
+  return <def.bfont_lpurple>
+elseif (<notogetflag <ref1>>==6)		
+  return <def.bfont_red>
+elseif (<notogetflag <ref1>>==5)		
+  return <def.bfont_orange>
+elseif (<notogetflag <ref1>>==4)		
+  return <def.bfont_gray>
+elseif (<notogetflag <ref1>>==3)		
+  return <def.bfont_gray>
+elseif (<notogetflag <ref1>>==2)		
+  return <def.<def.dlg_bg_<src.ctag0.dlg_bg>_font_item2>>	// green
+elseif (<notogetflag <ref1>>==1)		
+  return <def.bfont_lblue>
+else
+  return <def.bfont_lgray>
+endif
+
+[FUNCTION f_online_list_sidebar]
+local.count=<qval <serv.list.pm_<src>.count>==-1?0:<serv.list.pm_<src>.count>>
+local.x=84
+local.y=38
+if <src.ctag0.list>==0 && <isempty <src.ctag.online_menu>>
+  resizepic <dlocal.x> <dlocal.y> <def0.online_dlg_btn_bg> 38 33
+  button <eval <dlocal.x>+6> <eval <dlocal.y>+7> <def0.online_btn_inbox> 1 0 5001  		// inbox
+  if <dlocal.count> > 0
+    dhtmlgump <eval <dlocal.x>+6> <eval <dlocal.y>+14> 30 20 0 0 <def.online_bfont_title><def.bfont_size1><def.div_right><dlocal.count>
+  endif
+  f_online_tooltip Inbox
+  local.y += 36
+  resizepic <dlocal.x> <dlocal.y> <def0.online_dlg_btn_bg> 38 33
+  button <eval <dlocal.x>+6> <eval <dlocal.y>+7> <def0.online_btn_menu> 1 0 5012   // menu
+  f_online_tooltip Online Menu
+elif <src.ctag0.online_menu>==1
+  resizepic <dlocal.x> <dlocal.y> <def0.online_dlg_btn_bg> 38 33
+  button <eval <dlocal.x>+6> <eval <dlocal.y>+7> <def0.online_btn_menu> 1 0 5011  		// ONLINE LIST
+  f_online_tooltip Online List
+else
+  resizepic <dlocal.x> <dlocal.y> <def0.online_dlg_btn_bg> 38 33
+  button <eval <dlocal.x>+6> <eval <dlocal.y>+7> <def0.online_btn_menu> 1 0 5012   // menu
+  f_online_tooltip Online Menu
+endif
+
+[FUNCTION f_inbox_sidebar]  //PRIVATE MESSAGE SIDEBUTTONS
+local.x=84
+local.y=38
+resizepic <dlocal.x> <dlocal.y> <def0.online_dlg_btn_bg> 38 33
+button <eval <dlocal.x>+6> <eval <dlocal.y>+7> <def0.online_btn_menu> 1 0 5006  		// ONLINE LIST
+f_online_tooltip Online List
+
+[FUNCTION f_private_message_read] //READING PRIVATE MESSAGE
+local.x=562
+local.y=30
+args=<serv.list.pm_<src>.<src.ctag0.private_message_reading>>
+ref1=<argv[1]>
+local.t=<argv[2]>
+local.msg=<argv[3]>
+resizepic <eval <dlocal.x>-110> <eval <dlocal.y>-6> <def0.online_dlg_btn_bg> 280 166  // main background
+resizepic <eval <dlocal.x>-100> <eval <dlocal.y>+26> 3000 260 85  // text background
+dhtmlgump <eval <dlocal.x>-98> <eval <dlocal.y>+2> 132 20 0 0 <def.online_bfont1>From <qval <def.online_notoriety_colors>!=0?<ref1.f_noto_bfontcolor <src>>:<def.bfont_white>><ref1.name>
+dhtmlgump <eval <dlocal.x>+30> <eval <dlocal.y>+2> 130 20 0 0 <def.div_right><def.online_bfont1><local.t>
+dhtmlgump <eval <dlocal.x>-94> <eval <dlocal.y>+30> 260 85 0 0  <local.msg>
+dorigin <eval <dlocal.x>-56> <eval <dlocal.y>+124>
+button - - <def0.online_dlg_btn_send> 1 0 0
+dhtmlgump +3 +2 60 20 0 0 <def.bfont_size4><def.online_bfont1><def.center>Close
+if <ref1.tag0.priv_msg> && !<src.isgm>
+	gumppic +108 - <strarg <def0.online_dlg_btn_send>> 998			    // no button
+  f_online_tooltip <def.bfont_red><ref1.name> private messages are disabled
+	dhtmlgump +111 +2 60 20 0 0 <def.bfont_size4><def.online_bfont_red><def.center><def.h3>Reply
+else
+	button +108 - <def0.online_dlg_btn_send> 1 0 5000			// REPLY
+	dhtmlgump +111 +2 60 20 0 0 <def.bfont_size4><def.online_bfont_title><def.center><def.h3>Reply
+endif
+
+[FUNCTION f_private_message_compose]
+ref1=<src.ctag.private_message_compose>
+local.x=<argv[0]>
+local.y=<argv[1]>
+local.freq=1  // friend request button
+local.blk=1  // block button
+local.send=1  // send msg button
+
+resizepic <eval <dlocal.x>-110> <eval <dlocal.y>-6> <def0.online_dlg_btn_bg> 280 166  // main background
+resizepic <eval <dlocal.x>-100> <eval <dlocal.y>+26> 3000 260 85  // text background
+if <serv.list.pm_<src>_friends.findelem <ref1>> != -1 // <src.f_pm_isrequest <ref1>> || <src.f_pm_isblocked <ref1>> || <serv.list.pm_<src>_requests.findelem <ref1>> != -1)
+  call f_set_tooltip "You already have <ref1.name> in your list"
+  local.freq=
+endif
+if <src.f_pm_isfriend <ref1>>
+  call f_set_tooltip "<ref1.name> already has you in <ref1.sex his/her> list"
+  local.freq=
+endif
+if <serv.list.pm_<src>_requests.findelem <ref1>> != -1            // src already have a request from ref1
+  call f_set_tooltip "You already have a request from <ref1.name>"
+  local.freq=
+endif
+if <serv.list.pm_<src>_blocked.findelem <ref1>> != -1               // src already blocked ref1
+  call f_set_msg "<ref1.name> is blocked"
+  // call f_set_tooltip "<ref1.name> is blocked"
+  local.freq=
+  local.blk=
+  local.send=
+endif
+if <src.f_pm_isblocked <ref1>>                                  // ref1 blocked src
+  call f_set_msg "<ref1.name> blocked you"
+  // call f_set_tooltip "<ref1.name> blocked you"
+  local.freq=
+  local.send=
+endif
+if <ref1.tag0.priv_msg>
+  call f_set_msg "<ref1.name> private messages are disabled"
+  local.send=
+endif
+if <def0.online_message_staff>==0 && <src.account.plevel> < <ref1.account.plevel>
+  call f_set_msg "Staff messages disabled"
+  local.send=
+endif
+if <dlocal.freq>==1
+  button <eval <dlocal.x>+100> <eval <dlocal.y>+3> 4008 4010 1 0 5007 // friend request button
+  f_online_tooltip Friend Request
+else
+  gumppic <eval <dlocal.x>+100> <eval <dlocal.y>+3> 4008 998      // no button (addfriend)
+  if !<isempty <local.freq_tooltip>>
+    f_online_tooltip <streat <local.freq_tooltip>>
+  endif
+endif
+if <dlocal.blk>==1
+  button <eval <dlocal.x>+130> <eval <dlocal.y>+3> 4020 4022 1 0 5008 // add to block
+  f_online_tooltip Block
+else
+    gumppic <eval <dlocal.x>+130> <eval <dlocal.y>+3> 4020 998        // no button
+endif
+if <dlocal.send>==1
+  dhtmlgump <eval <dlocal.x>-98> <eval <dlocal.y>+2> 132 20 0 0 <def.online_bfont1>Message for <qval <def.online_notoriety_colors>!=0?<ref1.f_noto_bfontcolor <src>>:<def.bfont_white>><ref1.name>
+  dtextentrylimited <eval <dlocal.x>-90> <eval <dlocal.y>+32> 250 85 0 1 160
+  button <eval <dlocal.x>+52> <eval <dlocal.y>+124> <def0.online_dlg_btn_send> 1 0 5002			// Send
+  dhtmlgump <eval <dlocal.x>+55> <eval <dlocal.y>+126> 60 20 0 0 <def.bfont_size4><def.online_bfont_title><def.center><def.h3>Send
+else
+  if !<isempty <local.msg>>
+    dhtmlgump <eval <dlocal.x>-96> <eval <dlocal.y>+32> 250 40 0 0 <def.center><streat <local.msg>>.
+  endif
+  gumppic <eval <dlocal.x>+52> <eval <dlocal.y>+124> <strarg <def0.online_dlg_btn_send>> 998                                         // no button
+  dhtmlgump <eval <dlocal.x>+55> <eval <dlocal.y>+126> 60 20 0 0 <def.bfont_size4><def.online_bfont_gray><def.center>PM Off
+endif
+button <eval <dlocal.x>-56> <eval <dlocal.y>+124> <def0.online_dlg_btn_send> 1 0 0                                // close button
+dhtmlgump <eval <dlocal.x>-53> <eval <dlocal.y>+126> 60 20 0 0 <def.bfont_size4><def.online_bfont1><def.center>Close
+
+[FUNCTION f_inbox_page]
+local.count=<qval <serv.list.pm_<src>.count>==-1?0:<serv.list.pm_<src>.count>>
+local.page_max=<eval (<dlocal.count>-1)/10>+1
+local.x=114
+local.y=59
+PAGE <argv[0]>
+if <dlocal.count> > 10
+	local.next=<qval <argv[0]>==<dlocal.page_max>?1:<eval <argv[0]>+1>>
+	local.back=<qval <argv[0]>==1?<dlocal.page_max>:<eval <argv[0]>-1>>
+	button <eval <dlocal.x>-4> <eval <dlocal.y>+77> <def.online_dlg_btn_left> 0 <dlocal.back> 0
+  f_online_tooltip Page <dlocal.back>
+	button <eval <dlocal.x>+325> <eval <dlocal.y>+77> <def.online_dlg_btn_right> 0 <dlocal.next> 0
+  f_online_tooltip Page <dlocal.next>
+endif
+gumppictiled <eval <dlocal.x>+22> <eval <dlocal.y>-4> 298 1 39929
+for <eval <qval <argv[2]> > <dlocal.count>?<dlocal.count>:<argv[2]>>-1> <eval <argv[1]>-1>
+args=<serv.list.pm_<src>.<dlocal._for>>
+ref1=<argv[1]>
+local.t=<strarg <argv[2]>>
+local.msg=<argv[3]>
+if <ref1.isvalid>
+  button <eval <dlocal.x>+260> <eval <dlocal.y>-1> 4005 4007 1 0 <eval <local._for>+1>
+  f_online_tooltip Read & Reply
+  button <eval <dlocal.x>+292> <eval <dlocal.y>-1> <def.online_dlg_inbox_remove> 1 0 <eval 100+<local._for>>
+  f_online_tooltip Remove Message
+  dhtmlgump <eval <dlocal.x>+26> <eval <dlocal.y>+1> 236 20 0 0 <def.online_bfont1><local.t> <qval <def.online_notoriety_colors>!=0?<ref1.f_noto_bfontcolor <src>>:<def.online_bfont1>><ref1.name> <def.online_bfont_gray><local.msg>
+  gumppictiled <eval <dlocal.x>+22> <eval <dlocal.y>+20> 298 1 39929
+  gumppictiled <eval <dlocal.x>+22> <eval <dlocal.y>-3> 1 23 39929
+  gumppictiled <eval <dlocal.x>+319> <eval <dlocal.y>-3> 1 23 39929
+  local.y += 24
+endif
+endfor
+
+[FUNCTION f_pm_page]
+local.list=<def.online_list_<src.ctag0.list>>
+if <src.ctag0.list>==0
+  local.count=<serv.clients>
+elif <src.ctag0.list>==4
+  ref2=<src.guild>
+  local.count=<ref2.member.count>
+else
+  local.count=<qval <serv.list.pm_<src>_<local.list>.count> <= 0?0:<serv.list.pm_<src>_<local.list>.count>>
+endif
+local.page_max=<eval (<dlocal.count>-1)/10>+1
+local.x=114
+local.y=68
+PAGE <argv[0]>
+if <dlocal.count> > 10
+	local.next=<qval <argv[0]>==<dlocal.page_max>?1:<eval <argv[0]>+1>>
+	local.back=<qval <argv[0]>==1?<dlocal.page_max>:<eval <argv[0]>-1>>
+	button <eval <dlocal.x>-4> <eval <dlocal.y>+88> <def.online_dlg_btn_left> 0 <dlocal.back> 0		// back
+  f_online_tooltip Page <dlocal.back>
+	button <eval <dlocal.x>+200> <eval <dlocal.y>+88> <def.online_dlg_btn_right> 0 <dlocal.next> 0		// next
+  f_online_tooltip Page <dlocal.next>
+endif
+for <eval <argv[1]>-1> <eval <qval <argv[2]> > <dlocal.count>?<dlocal.count>:<argv[2]>>-1>
+if <src.ctag0.list>==0  // online
+  ref1=<serv.client.<dlocal._for>.uid>
+elif <src.ctag0.list>==4  // guild
+  ref1=<ref2.member.<dlocal._for>.uid>
+else
+  ref1=<serv.list.pm_<src>_<local.list>.<dlocal._for>>
+  button <eval <dlocal.x>+172> <eval <dlocal.y>-3> <def0.online_dlg_list_remove> 1 0 <eval 1000+<local._for>> // remove button
+  f_online_tooltip Remove
+endif
+if <ref1.isvalid> && <ref1.isplayer>
+  if <src.ctag0.list>==0  // online
+    if <def0.online_private_messages>==1 && !(<ref1.account.plevel> > <src.account.plevel> && <ref1.flags>&02000)
+      button <eval <dlocal.x>+46> <eval <dlocal.y>-4> <def0.online_dlg_btn_name> 1 0 <eval <dlocal._for>+1> // name button
+      f_online_tooltip Send Message
+    endif
+  elif <src.ctag0.list>==1 || <src.ctag0.list>==4 //&& <ref1>!=<src> // friends|guild
+    gumppic <eval <dlocal.x>+32> <eval <dlocal.y>+2> <qval <ref1.isonline>?2361:2360> 0 // online/offline green/red
+    f_online_tooltip <qval <ref1.isonline>?Online:Offline>
+    button <eval <dlocal.x>+46> <eval <dlocal.y>-4> <def0.online_dlg_btn_name> 1 0 <eval <dlocal._for>+1> // name button
+    f_online_tooltip Send Message
+  elif <src.ctag0.list>==3  // requests
+    gumppic <eval <dlocal.x>+46> <eval <dlocal.y>-4> <strarg <def0.online_dlg_btn_name>> 0 // name fake button
+    button <eval <dlocal.x>+23> <eval <dlocal.y>-3> <def.online_dlg_btn_add> 1 0 <eval 4000+<local._for>> // add to friends button
+    f_online_tooltip Add Friend
+  else
+    gumppic <eval <dlocal.x>+46> <eval <dlocal.y>-4> <strarg <def0.online_dlg_btn_name>> 0 // name fake button
+  endif
+  dhtmlgump <eval <dlocal.x>+55> <eval <dlocal.y>-1> 110 20 0 0 <def.center><qval <def.online_notoriety_colors>!=0?<ref1.f_noto_bfontcolor <src>>:<def.bfont_white>><ref1.name>
+  local.y += 29
+else
+  if <src.ctag0.list> >= 1 && <src.ctag0.list> <= 3
+    serv.list.pm_<src>_<local.list>.<dlocal._for>.remove  // remove invalid player uid if any (deleted char maybe)
+  endif
+endif
+endfor
+
+[DIALOG d_online]
+150,50
+PAGE 0
+local.list=<def.online_list_<src.ctag0.list>>
+if <src.ctag0.list>==0
+  local.count=<serv.clients>
+elif <src.ctag0.list>==4
+  ref2=<src.guild>
+  local.count=<ref2.member.count>
+else
+  local.count=<qval <serv.list.pm_<src>_<local.list>.count>==-1?0:<serv.list.pm_<src>_<local.list>.count>>
+endif
+local.page_max=<eval (<dlocal.count>-1)/10>+1	// max items per page
+if <src.ctag0.online_menu>==1
+  local.h=206
+elif <dlocal.count> < 10
+  local.h=<eval <dlocal.count>*29>+<qval <dlocal.count> == 0?82:62>
+else
+  local.h=354 // max h
+endif
+if <serv.clients> > <serv.var0.record_online>
+  serv.var.record_online=<serv.clients>
+  if <def0.online_show_maxclients>==1 && <src.ctag0.list>==0
+    local.h += 24
+    local.showmax=1
+  endif
+endif
+
+resizepic 120 20 <def0.online_dlg_bg> 205 <dlocal.h>
+dhtmlgump 159 32 130 20 0 0 <def.online_bfont_title><def.bfont_size7><def.h3><def.center><qval <isempty <src.ctag.online_menu>>?<local.list> List <def.online_bfont_gray>(<dlocal.count>):Message Menu>
+if <dlocal.showmax>==1
+  dhtmlgump 159 56 130 20 0 0 <def.online_bfont1><def.bfont_size1><def.center>Record Online <def.online_bfont2><serv.var0.record_online>
+endif
+
+f_online_list_sidebar
+if <src.ctag0.list>==0 || <src.ctag0.list>==1 || <src.ctag0.list>==4 // online|friends|guild
+  if !<isempty <src.ctag.private_message_compose>>
+    f_private_message_compose 438,30
+  endif
+endif
+if <dlocal.count>
+  local.i=1
+  for 1 <dlocal.page_max>
+  f_pm_page <dlocal._for>,<dlocal.i>,<eval <dlocal._for>*10>
+  local.i += 10
+  endfor
+else
+  dhtmlgump 159 58 130 20 0 0 <def.online_bfont_gray><def.bfont_size4><def.center>Empty
+endif
+if !<isempty <src.ctag.online_menu>>
+  page 5000
+  local.x=117
+  local.y=68
+  for 1 5
+  args=<def.online_menu_<dlocal._for>>
+  if <dlocal._for>==4 && !<src.guild>
+    gumppic <eval <dlocal.x>+43> <eval <dlocal.y>-4> <strarg <def0.online_dlg_btn_name>> 998
+    f_online_tooltip You have no guild
+  else
+    button <eval <dlocal.x>+43> <eval <dlocal.y>-4> <def0.online_dlg_btn_name> 1 0 <argv[1]>
+  endif
+  dhtmlgump <eval <dlocal.x>+70> <eval <dlocal.y>-0> 74 15 0 0 <def.online_bfont_title><def.bfont_size4><def.center><argv[0]>
+  if <dlocal._for>==5
+    f_online_tooltip Private Messages <qval <src.tag0.priv_msg>?OFF:ON>
+    gumppic <eval <dlocal.x>+52> <eval <dlocal.y>+3> <qval <src.tag0.priv_msg>?2360:2361> 0 // offline/online red/green
+  else
+    f_online_tooltip <argv[3]>
+  endif
+  local.y += 29
+  endfor
+endif
+
+[DIALOG d_online prebutton]
+src.dialogclose d_online
+
+[DIALOG d_online button]
+ON=0
+  if !<isempty <src.ctag.private_message_compose>>
+    src.ctag.private_message_compose=
+    sdialog d_online
+  elif !<isempty <src.ctag.list>>
+    src.ctag.list=
+  endif
+  src.ctag.online_menu=
+  return 1
+
+on=1 999
+  local.opt=<eval <argn1>-1>
+  if <src.ctag0.list>==0
+    ref1=<serv.client.<dlocal.opt>.uid>
+  elif <src.ctag0.list>==4
+    if <src.guild>
+      ref2=<src.guild>
+      ref1=<ref2.member.<dlocal.opt>.uid>
+    else
+      src.sysmessage @,,1 You don't have a guild.
+      sdialog d_online
+      return 1     
+    endif
+  else
+    ref1=<serv.list.pm_<src>_<def.online_list_<src.ctag0.list>>.<dlocal.opt>>
+  endif
+  if <ref1>==<src>
+    sdialog d_online
+    return 1
+  endif
+  if <def0.online_message_staff>==0 && <src.account.plevel> < <ref1.account.plevel>
+    src.sysmessage @,,1 You do not have the priviledges to chat with that person.
+    sdialog d_online
+    return 1
+  endif
+  src.ctag.private_message_compose=<ref1>
+  sdialog d_online
+
+ON=1000 1999  // remove from list
+  local.opt=<eval <argn1>-1000>
+  local.list=<def.online_list_<src.ctag0.list>>
+  if <src.ctag0.list>==4  // guild
+    ref2=<src.guild>
+    ref1=<ref2.member.<dlocal.opt>>
+  else
+    ref1=<serv.list.pm_<src>_<local.list>.<dlocal.opt>>
+  endif
+  serv.list.pm_<src>_<local.list>.<dlocal.opt>.remove // remove ref1 from src list
+  src.sysmessage @,,1 <ref1.name> has been removed from your <local.list> list.
+  if <src.ctag0.list>==1  // friend
+    local.s=<serv.list.pm_<ref1>_friends.findelem <src>>
+    serv.list.pm_<ref1>_friends.<dlocal.s>.remove   // remove src from ref1 list
+    if <ref1.isonline>
+      ref1.sysmessage @,,1 <src.name> has removed you from <sex his/her> <local.list> list.
+    endif
+  endif
+  sdialog d_online
+
+ON=4000 4999  // accept friend request
+  local.opt=<eval <argn1>-4000>
+  ref1=<serv.list.pm_<src>_requests.<dlocal.opt>>
+  serv.list.pm_<ref1>_friends.add <src>
+  serv.list.pm_<src>_friends.add <serv.list.pm_<src>_requests.<dlocal.opt>>
+  serv.list.pm_<src>_requests.<dlocal.opt>.remove
+  if <src.f_pm_isrequest <ref1>> // src is in ref1 request list
+    local.s=<serv.list.pm_<ref1>_requests.findelem <src>>
+    serv.list.pm_<ref1>_requests.<local.s>.remove
+  endif
+  src.sysmessage @,,1 <ref1.name> has been added to your friend list.
+  if <ref1.isonline>
+    ref1.sysmessage @,,1 <src.name> has accepted your friend request.
+  endif
+  sdialog d_online
+
+ON=5001 // inbox
+  src.ctag.list=
+  src.ctag.private_message_compose=
+  src.inbox
+
+ON=5002 // SEND PM
+  if <isempty <argtxt[1]>> || <eval strlen(<argtxt[1]>)> < 2
+    src.sysmessage @<def.fail>,,1 Invalid Text.
+    sdialog d_online
+    return 1
+  endif
+  ref2=<src.ctag0.private_message_compose>
+  local.count=<qval <serv.list.pm_<src>.count>==-1?0:<serv.list.pm_<src>.count>>
+  local.offline_count=<qval <serv.list.pm_<ref2>_offline.count>==-1?0:<serv.list.pm_<ref2>_offline.count>>
+  if !<ref2.isonline>
+    if <dlocal.offline_count> > 0 && <serv.list.pm_<ref2>_offline.findelem <src>> != -1
+      src.sysmessage @<def.fail>,,1 You already sent an offline message to <ref2.name>
+      sdialog d_online
+      return 1
+    endif
+    serv.list.pm_<ref2>_offline.add <src>
+    if !<ref2.isevent.e_offline_message>
+      ref2.events=+e_offline_message
+    endif
+  else
+    local.online=1
+  endif
+  if <dlocal.count> >= <def0.online_inbox_msg_max>
+    serv.list.pm_<ref2>.0.remove
+  endif
+  src.ctag.private_message_compose=
+  call f_return_todate <serv.rtime>
+  local.todate=<local.hour>:<local.min> <local.day>.<local.month>.<strsub 2 0 <local.year>>
+  serv.list.pm_<ref2>.add <serv.time>,<src>,<local.todate>,<argtxt[1]>
+  if <def0.online_logmsg>==1
+    serv.log @3,0,1 PM from <name> to <ref2.name>: <argtxt[1]>
+  endif
+  if <dlocal.online>==1
+    ref2.sysmessage @<qval <src.isgm>?85,,1 Staff:1151,,1 Private> message from <src.name>.
+    ref2.sound 04a
+    trysrc <ref2> dialogclose d_private_message_notification
+    trysrc <ref2> sdialog d_private_message_notification
+  endif
+  src.sysmessage @,,1 Message to <ref2.name> sent.
+  sdialog d_online
+
+ON=5004 // FRIEND LIST
+  src.ctag.private_message_compose=
+  src.ctag.online_menu=
+  src.ctag.list=1
+  sdialog d_online
+
+ON=5005 // BLOCK LIST
+  src.ctag.private_message_compose=
+  src.ctag.online_menu=
+  src.ctag.list=2
+  sdialog d_online
+
+ON=5006 // FRIEND REQUEST LIST
+  src.ctag.private_message_compose=
+  src.ctag.online_menu=
+  src.ctag.list=3
+  sdialog d_online
+
+ON=5013 // GUILD LIST
+  src.ctag.online_menu=
+  src.ctag.private_message_compose=
+  if <src.guild>
+    src.ctag.list=4
+  endif
+  sdialog d_online
+
+ON=5007 // FRIEND REQUEST
+  ref1=<src.ctag0.private_message_compose>
+  if <src.f_pm_isblocked <ref1>>
+    src.sysmessage @,,1 <ref1.name> blocked you.
+    local.fail=1
+  elif <serv.list.pm_<src>_blocked.findelem <ref1>> != -1
+    src.sysmessage @,,1 You already have <ref1.name> in your blocked list.
+    local.fail=1
+  elif <src.f_pm_isfriend <ref1>>
+    src.sysmessage @,,1 <ref1.name> already has you in <ref1.sex his/her> friend list.
+    local.fail=1
+  elif <serv.list.pm_<src>_friends.findelem <ref1>> != -1
+    src.sysmessage @,,1 You already have <ref1.name> in your friend list.
+    local.fail=1
+  elif <src.f_pm_isrequest <ref1>>
+    src.sysmessage @,,1 <ref1.name> already has you in <ref1.sex his/her> requests list.
+    local.fail=1
+  elif <serv.list.pm_<src>_requests.findelem <ref1>> != -1
+    src.sysmessage @,,1 You already have <ref1.name> in your requests list.
+    local.fail=1
+  endif
+  if <dlocal.fail>==1
+    sdialog d_online
+    return 1
+  endif
+  serv.list.pm_<ref1>_requests.add <src>
+  src.sysmessage @,,1 You sent a friend request to <ref1.name>.
+  if <ref1.isonline>
+    ref1.sysmessage @,,1 <src.name> sent you a friend request. // trysrc <ref1> sysmessage
+  endif
+  sdialog d_online
+
+ON=5008 // ADD TO BLOCK
+  ref1=<src.ctag0.private_message_compose>
+  if <serv.list.pm_<src>_requests.findelem <ref1>> != -1  // ref1 is in src requests list
+    local.s=<serv.list.pm_<src>_requests.findelem <ref1>>
+    serv.list.pm_<src>_requests.<local.s>.remove
+  endif
+  if <src.f_pm_isrequest <ref1>> // src is in ref1 request list
+    local.s=<serv.list.pm_<ref1>_requests.findelem <src>>
+    serv.list.pm_<ref1>_requests.<local.s>.remove
+  endif
+  if <serv.list.pm_<src>_friends.findelem <ref1>> != -1  // ref1 is in src friends list
+    local.s=<serv.list.pm_<src>_friends.findelem <ref1>>
+    serv.list.pm_<src>_friends.<local.s>.remove
+    src.sysmessage @,,1 <ref1.name> was removed from your friend list.
+  endif
+  if <src.f_pm_isfriend <ref1>> // src is in ref1 friends list
+    local.s=<serv.list.pm_<ref1>_friends.findelem <src>>
+    serv.list.pm_<ref1>_friends.<local.s>.remove
+    if <ref1.isonline>
+      ref1.sysmessage @,,1 <src.name> was removed from your friend list.
+    endif
+  endif
+  serv.list.pm_<src>_blocked.add <ref1>
+  src.ctag.private_message_compose=
+  src.sysmessage @,,1 <ref1.name> has been added to your block list.
+  sdialog d_online
+
+ON=5010 // DISABLE PM
+  src.private
+  sdialog d_online 5000
+
+ON=5011 // ONLINE
+  src.online
+
+ON=5012 // MENU
+  src.ctag.list=
+  src.ctag.private_message_compose=
+  src.ctag.online_menu=1
+  sdialog d_online 5000
+
+[DIALOG d_pm_list]
+150,50
+PAGE 0
+local.count=<qval <serv.list.pm_<src>.count>==-1?0:<serv.list.pm_<src>.count>>
+local.page_max=<eval (<dlocal.count>-1)/10>+1	// max items per page
+if <dlocal.count> < 10
+  local.h=<eval <dlocal.count>*24>+50
+else
+  local.h=292 // max h
+endif
+resizepic 120 20 <def0.online_dlg_bg> 330 <dlocal.h>
+f_inbox_sidebar
+dhtmlgump 163 32 250 20 0 0 <def.bfont_size7><def.center><def.h3><def.online_bfont_title>Private Messages <def.online_bfont_gray>(<dlocal.count>)
+if <dlocal.count>
+  if !<isempty <src.ctag.private_message_reading>>
+    f_private_message_read
+  endif
+  if !<isempty <src.ctag.private_message_compose>>
+    f_private_message_compose 562,30
+  endif
+  local.i=1
+  for 1 <dlocal.page_max>
+  f_inbox_page <dlocal._for>,<dlocal.i>,<eval <dlocal._for>*10>,<ref1>
+  local.i += 10
+  endfor
+else
+  dhtmlgump 166 54 250 20 0 0 <def.bfont_size4><def.center><def.online_bfont_gray>No messages
+endif
+
+[DIALOG d_pm_list prebutton]
+src.dialogclose d_pm_list
+
+[DIALOG d_pm_list button]
+ON=0
+  if !<isempty <src.ctag.private_message_compose>>
+    src.ctag.private_message_compose=
+    sdialog d_pm_list
+  elif !<isempty <src.ctag.private_message_reading>>
+    src.ctag.private_message_reading=
+    sdialog d_pm_list
+  endif
+  src.ctag.pm_block=
+  src.ctag.pm_friends=
+  return 1
+
+ON=1 99 // SELECT MESSAGE
+  local.opt=<eval <argn1>-1>
+  src.ctag.private_message_compose=
+  src.ctag.private_message_reading=<dlocal.opt>
+  sdialog d_pm_list
+
+ON=100 199  // MESSAGE DELETE
+  local.opt=<eval <argn1>-100>
+  serv.list.pm_<src>.<dlocal.opt>.remove
+  src.ctag.private_message_compose=
+  src.ctag.private_message_reading=
+  src.sysmessage Message deleted
+  sdialog d_pm_list
+
+ON=5000 // reply
+  args=<serv.list.pm_<src>.<src.ctag0.private_message_reading>>
+  ref1=<argv[1]>
+  src.ctag.private_message_compose=<ref1>
+  src.ctag.private_message_reading=
+  sdialog d_pm_list
+
+ON=5006 // ONLINE
+  src.ctag.private_message_reading=
+  src.online
+
+ON=5002 // SEND PM
+  if <isempty <argtxt[1]>> || <eval strlen(<argtxt[1]>)> < 2
+    src.sysmessage @<def.fail>,,1 Invalid Text.
+    sdialog d_pm_list
+    return 1
+  endif
+  ref2=<src.ctag0.private_message_compose>
+  local.count=<qval <serv.list.pm_<src>.count>==-1?0:<serv.list.pm_<src>.count>>
+  local.offline_count=<qval <serv.list.pm_<ref2>_offline.count>==-1?0:<serv.list.pm_<ref2>_offline.count>>
+  if !<ref2.isonline>
+    if <dlocal.offline_count> > 0 && <serv.list.pm_<ref2>_offline.findelem <src>> != -1
+      src.sysmessage @<def.fail>,,1 You already sent an offline message to <ref2.name>
+      sdialog d_pm_list
+      return 1
+    endif
+    serv.list.pm_<ref2>_offline.add <src>
+    if !<ref2.isevent.e_offline_message>
+      ref2.events=+e_offline_message
+    endif
+  else
+    local.online=1
+  endif
+  if <dlocal.count> >= <def0.online_inbox_msg_max>
+    serv.list.pm_<ref2>.0.remove
+  endif
+  src.ctag.private_message_compose=
+  call f_return_todate <serv.rtime>
+  local.todate=<local.hour>:<local.min> <local.day>.<local.month>.<strsub 2 0 <local.year>>
+  serv.list.pm_<ref2>.add <serv.time>,<src>,<local.todate>,<argtxt[1]>
+  if <def0.online_logmsg>==1
+    serv.log @3,0,1 PM from <src.name> [<src>] to <ref2.name> [<ref2>]: <argtxt[1]>
+  endif
+  if <dlocal.online>==1
+    ref2.sysmessage @<qval <src.isgm>?85,,1 Staff:1151,,1 Private> message from <src.name>.
+    ref2.sound 04a
+    trysrc <ref2> dialogclose d_private_message_notification
+    trysrc <ref2> sdialog d_private_message_notification
+  endif
+  src.sysmessage @,,1 Message to <ref2.name> sent.
+  sdialog d_pm_list
+
+[DIALOG d_private_message_notification] // RECEIVE PRIVATE MESSAGE
+120,100
+PAGE 0
+local.count=<qval <serv.list.pm_<src>.count>==-1?0:<serv.list.pm_<src>.count>>
+local.x=83
+local.y=36
+resizepic <dlocal.x> <dlocal.y> <def0.online_dlg_btn_bg> 38 33
+button <eval <dlocal.x>+6> <eval <dlocal.y>+7> <def0.online_btn_menu> 1 0 1  		// ONLINE LIST
+f_online_tooltip INBOX (<dlocal.count>)
+dhtmlgump <eval <dlocal.x>+6> <eval <dlocal.y>+14> 30 20 0 0 <def.online_bfont_title><def.bfont_size1><def.div_right><dlocal.count>
+
+[DIALOG d_private_message_notification button]
+ON=1
+  src.dialogclose d_online
+  src.inbox
+  sound 059
+  return 1
+
+[EOF]
