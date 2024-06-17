@@ -43,36 +43,6 @@ ON=@Timer
 	remove
 	return 1
 
-[ITEMDEF i_teleporter_wind]
-DEFNAME=i_teleporter_wind
-ID=0307f	// arcane circle center
-NAME=Wind
-TYPE=t_script
-TEVENTS=t_teleporter_skillreq
-tag.skill_req=Magery
-tag.skill_amt=80.0
-tag.effect=3,i_fx_sparkle,10,16,10
-CATEGORY=Custom  
-SUBSECTION=Teleporter
-DESCRIPTION=Wind
-ON=@Create
-	morep=5223,191,5,0	// wind city
-// *********************************
-[ITEMDEF i_teleporter_skill]
-DEFNAME=i_teleporter_skill
-ID=i_rune_alchem_3
-NAME=Teleporter
-TYPE=t_script
-TEVENTS=t_teleporter_skillreq
-CATEGORY=Custom  
-SUBSECTION=Teleporter
-DESCRIPTION=Skillreq
-ON=@Create
-	tag.skill_req=Stealth
-	tag.skill_amt=30.0
-	tag.effect=3,i_fx_sparkle,10,16,10
-	morep=1,1,1,0
-
 [DIALOG d_teleporter_skill]
 200,300
 PAGE 0
@@ -82,7 +52,7 @@ tooltip 1111683 					// Background
 
 dorigin 114 116
 dhtmlgump - - 90 20 0 0 <src.f_get_bfont2>MOREP
-dhtmlgump 192 - 90 20 0 0 <src.f_get_bfont2>My P
+dhtmlgump +192 - 90 20 0 0 <src.f_get_bfont2>My P
 gumppictiled +80 - 90 18 87
 button +60 +3 1209 1210 1 0 1
 button +176 +3 1209 1210 1 0 5	// set p as morep
@@ -133,5 +103,35 @@ ON=5555 // change background
     endif
 	dialog d_teleporter_skill
 	return 1
+
+[ITEMDEF i_teleporter_wind]
+DEFNAME=i_teleporter_wind
+ID=0307f	// arcane circle center
+NAME=Wind
+TYPE=t_script
+TEVENTS=t_teleporter_skillreq
+tag.skill_req=Magery
+tag.skill_amt=80.0
+tag.effect=3,i_fx_sparkle,10,16,10
+CATEGORY=Custom  
+SUBSECTION=Teleporter
+DESCRIPTION=Wind
+ON=@Create
+	morep=5223,191,5,0	// wind city
+
+[ITEMDEF i_teleporter_skill]
+DEFNAME=i_teleporter_skill
+ID=i_rune_alchem_3
+NAME=Teleporter
+TYPE=t_script
+TEVENTS=t_teleporter_skillreq
+CATEGORY=Custom  
+SUBSECTION=Teleporter
+DESCRIPTION=Skillreq
+ON=@Create
+	tag.skill_req=Stealth
+	tag.skill_amt=30.0
+	tag.effect=3,i_fx_sparkle,10,16,10
+	morep=1,1,1,0
 
 [EOF]
