@@ -73,4 +73,65 @@ ON=@Create
 	tag.effect=3,i_fx_sparkle,10,16,10
 	morep=1,1,1,0
 
+[DIALOG d_teleporter_skill]
+200,300
+PAGE 0
+f_custom_dialog_3 100,100,260,116
+BUTTON 106 105 2447 2448 1 0 5555  	// change bg
+tooltip 1111683 					// Background
+
+dorigin 114 116
+dhtmlgump - - 90 20 0 0 <src.f_get_bfont2>MOREP
+dhtmlgump 192 - 90 20 0 0 <src.f_get_bfont2>My P
+gumppictiled +80 - 90 18 87
+button +60 +3 1209 1210 1 0 1
+button +176 +3 1209 1210 1 0 5	// set p as morep
+dtextentrylimited +82 - 130 15 0480 1 22 <morep>
+dhtmlgump - *22 90 20 0 0 <src.f_get_bfont2>SKILL
+gumppictiled +80 - 146 18 87
+button +60 +3 1209 1210 1 0 2
+dtextentrylimited +82 - 130 15 0480 2 22 <tag.skill_req>
+dhtmlgump - *22 90 20 0 0 <src.f_get_bfont2>AMOUNT
+gumppictiled +80 - 146 18 87
+button +60 +3 1209 1210 1 0 3
+dtextentrylimited +82 - 130 15 0480 3 22 <tag0.skill_amt>
+dhtmlgump - *22 90 20 0 0 <src.f_get_bfont2>EFFECT
+gumppictiled +80 - 146 18 87
+button +60 +3 1209 1210 1 0 4
+dtextentrylimited +82 - 130 15 0480 4 22 <qval <isempty <tag.effect>>?NO FX:<tag.effect>>
+
+[DIALOG d_teleporter_skill prebutton]
+src.dialogclose d_teleporter_skill
+
+[DIALOG d_teleporter_skill button]
+ON=0
+	return 1
+on=1
+	morep=<argtxt[1]>
+	dialog d_teleporter_skill
+	return 1
+on=2
+	tag.skill_req=<argtxt[2]>
+	dialog d_teleporter_skill
+	return 1
+on=3
+	tag.skill_amt=<argtxt[3]>
+	dialog d_teleporter_skill
+	return 1
+on=4
+	tag.effect=<argtxt[4]>
+	dialog d_teleporter_skill
+	return 1
+on=5
+	morep=<src.p>
+	dialog d_teleporter_skill
+	return 1
+ON=5555 // change background
+    src.ctag0.dlg_bg += 1
+    if <src.ctag.dlg_bg>==<def.dlg_bg_max>
+        src.ctag.dlg_bg=
+    endif
+	dialog d_teleporter_skill
+	return 1
+
 [EOF]
