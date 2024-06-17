@@ -13,18 +13,17 @@ ON=@Dclick
 	endif
 	return 1
 ON=@Step
-	if !<src.isplayer>
-		return 1
-	endif
-	if <src.<tag.skill_req>> >= <tag0.skill_amt> && !<src.findid.i_mem_teleporter_effect.isvalid>
-		src.newitem=i_mem_teleporter_effect
-		if !<isempty <tag.effect>>
-			new.tag.effect=<tag.effect>
+	if <src.isplayer>
+		if <src.<tag.skill_req>> >= <tag0.skill_amt> && !<src.findid.i_mem_teleporter_effect.isvalid>
+			if !<isempty <tag.effect>>
+				src.effect=<tag.effect>
+			endif
+			src.newitem=i_mem_teleporter_effect
+			new.morep=<morep>
+			new.equip <src>
+		else
+			return 0
 		endif
-		new.morep=<morep>
-		new.equip <src>		
-	else
-		return 0
 	endif
 
 [ITEMDEF i_mem_teleporter_effect]
