@@ -1,3 +1,8 @@
+[DEFNAME potion_keg]
+keg_storage_max			1000
+keg_upgrade_amt			25
+
+
 [TYPEDEF t_potion_keg]
 // more1=potion baseid
 // more2=amount potions stored
@@ -6,12 +11,12 @@
 ON=@ClientTooltip
 	if <more1>
 		ADDCLILOC <def.empty_cliloc2>,<def.bfont_lyellow><serv.itemdef.<more1>.name><def.bfont_white>
-		if <more2>
-			ADDCLILOC 1065591,<dmore2>,<dtag0.maxcharges>
-		endif
 	else
 		ADDCLILOC <def.empty_cliloc2>,Empty
 	endif
+	// if <more2>
+		ADDCLILOC 1065591,<dmore2>,<dtag0.maxcharges>
+	// endif
 
 ON=@Dclick
     if !<canseelos>
@@ -103,7 +108,7 @@ ON=@Targon_Cancel
 
 [TYPEDEF t_keg_charge]
 ON=@ClientTooltip
-	ADDCLILOC <def.empty_cliloc2>,+25 Charges<def.bfont_white>
+	ADDCLILOC <def.empty_cliloc2>,+25 Storage<def.bfont_white>
 
 ON=@Dclick
 	src.sysmessage @,,1 Select potion keg to upgrade.
@@ -118,12 +123,15 @@ ON=@Targon_Item
 		src.sysmessage @,,1 <ref1.name> must be in your backpack.
 	elif !<ref1.istevent.t_potion_keg>
 		src.sysmessage @,,1 Invalid target.
-	elif <ref1.dtag0.maxcharges> >= 1000
+	elif <ref1.dtag0.maxcharges> >= <def0.keg_storage_max>
 		src.sysmessage @,,1 <ref1.name> storage can't be improved any further.
 	else
 		src.sound 023e
-		src.sysmessage @,,1 <ref1.name> storage has been increased by 25.
-		ref1.tag0.maxcharges += 25
+		src.sysmessage @,,1 <ref1.name> storage has been increased by <dtag0.charges>.
+		ref1.tag0.maxcharges += <dtag0.charges>
+		if <ref1.dtag0.maxcharges> > <def0.keg_storage_max>
+			ref1.tag.maxcharges=<def0.keg_storage_max>
+		endif
 		ref1.resendtooltip 1,0
 		src.consume 1 <baseid>
 	endif
@@ -152,7 +160,7 @@ CATEGORY=Custom
 SUBSECTION=Tinkering Items
 DESCRIPTION=Potion Keg (Empty)
 ON=@Create
-   MaxAmount=1
+   MaxAmount=1	// for some reason was stacking, tiledata ok
    tag.maxcharges=150
    color=<tag.empty_color>
 
@@ -189,5 +197,7 @@ tag.itemlevel=0
 CATEGORY=Custom
 SUBSECTION=Tinkering Items
 DESCRIPTION=Potion Keg Charge
+ON=@Create
+	tag.charges=25
 
 [EOF]
