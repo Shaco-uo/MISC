@@ -102,7 +102,11 @@ ON=@Targon_Cancel
 	return 1
 
 [TYPEDEF t_keg_charge]
+ON=@ClientTooltip
+	ADDCLILOC <def.empty_cliloc2>,+25 Charges<def.bfont_white>
+
 ON=@Dclick
+	src.sysmessage @,,1 Select potion keg to upgrade.
 	target
 	return 1
 
@@ -171,15 +175,14 @@ ON=@Create
    tag.maxcharges=300
    color=<tag.empty_color>
 
-// Keg Charges +25
-[ITEMDEF i_keg_potion_charge]
+[ITEMDEF i_keg_potion_charge] // Keg Charges +25
 DEFNAME=i_keg_potion_charge
 ID=i_gear_custom
-NAME=Potion Keg Charge%s
+NAME=Potion Keg Upgrade
 TYPE=t_script
 WEIGHT=1.0
 VALUE=10
-RESOURCES=10 i_tribal_berry,1 i_ancient_resin
+RESOURCES=5 i_ingot_valorite,5 i_core_giant_3
 SKILLMAKE=TINKERING 100.0,t_tinker_tools
 TEVENTS=t_keg_charge
 tag.itemlevel=0
