@@ -82,6 +82,13 @@ src.ctag.private_message_compose=
 src.dialogclose d_pm_list
 sdialog d_pm_list
 
+[FUNCTION f_pm_clear_lists]
+serv.list.pm_<src>.clear
+serv.list.pm_<src>_friends.clear
+serv.list.pm_<src>_requests.clear
+serv.list.pm_<src>_block.clear
+serv.list.pm_<src>_offline.clear
+
 [FUNCTION f_pm_isfriend]
 ref1=<args>
 if <serv.list.pm_<ref1>_friends.findelem <src>> != -1
