@@ -76,6 +76,7 @@ else
 	ref3=<hval <ref2.actarg1>&~030000000>
 	ref3.attr=040a4
 	ref3.cont=<src.findlayer.74>	// 55
+	ref3.timer=-1
 	src.dialogclose d_stable
 	sdialog d_stable
 endif
