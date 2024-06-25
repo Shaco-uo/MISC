@@ -1,0 +1,271 @@
+[ITEMDEF i_stablebox]
+ID=i_backpack
+LAYER=74	// 55
+WEIGHT=0
+NAME=Stable Box
+ON=@Create
+	attr=04
+	color=0455
+	weightreduction=100
+	tag.stable_limit=40
+
+[FUNCTION f_check_stablebox]
+if !<findlayer.74.isvalid>	// 55
+	serv.newitem=i_stablebox,1,<uid>
+endif
+
+[EVENTS e_animaltrainer]
+ON=@Dclick
+	if <distance> > 4
+		src.sysmessage @,,1 <name> is too far away.
+		return 1
+	endif
+	src.dialogclose d_stable
+	sdialog d_stable
+	return 1
+		
+ON=@ContextMenuSelect
+	if <distance> > 4
+		src.sysmessage @,,1 <name> is too far away.
+		return 1
+	endif
+	if <argn>==400 // 3006126 // Stable Pet
+		ref1=<src.findlayer.74>
+		if <ref1.rescount> >= <ref1.dtag0.stable_limit>
+			src.sysmessage @<def.fail>,,1 Your stable is full.
+		else
+			src.dialogclose d_stable
+			src.targetf f_stable
+		endif
+		return 1
+	endif
+	if <argn>==401 // 3006127 // claim pet
+		src.dialogclose d_stable
+		src.dialog d_stable
+		return 1
+	endif
+
+[FUNCTION f_stable]
+ref1=<src.findlayer.74>
+ref2=<argo>
+if !(<ref2.isvalid> && <ref2.ischar> && <ref2.npc>)
+	src.sysmessage @,,1 Invalid target.
+elif !<ref2.ismypet>
+	src.sysmessage @,,1 <ref2.name> is not your pet.
+elif <ref2.distance> > 2
+	src.sysmessage @,,1 <ref2.name> is too far away.
+elif <ref2.flags>&statf_conjured || <ref2.body>==c_man || <ref2.body>==c_woman
+	src.sysmessage @,,1 <ref2.name> can't be stabled.
+elif <ref2.isevent.e_bonding> || <ref2.bonded>==1
+	src.sysmessage @,,1 You cannot stable <qval <ref2.bonded>==1?bonded:bonding> creatures.
+elif <ref2.istevent.e_pack_pet> && <ref2.findlayer.21.rescount>
+	src.sysmessage @<def.fail>,,1 <ref2.name>'s pack must be emptied before using stables.
+elif <ref2.food> > <ref2.maxfood>
+	src.sysmessage @,,1 <ref2.name> must be fed before using stables.
+elif <ref2.hits> < <ref2.maxhits>
+	src.sysmessage @,,1 <ref2.name> must be fully restored before using stables.
+elif <ref2.flags>&statf_poisoned
+	src.sysmessage @,,1 <ref2.name> is poisoned.
+elif <ref2.flags>&statf_freeze
+	src.sysmessage @,,1 <ref2.name> is paralyzed.
+elif <ref1.rescount> >= <ref1.dtag0.stable_limit>
+	src.sysmessage @<def.fail>,,1 Your stable is full.
+else
+	src.f_check_stablebox
+	ref2.shrink
+	ref3=<hval <ref2.actarg1>&~030000000>
+	ref3.attr=040a4
+	ref3.cont=<src.findlayer.74>	// 55
+	src.dialogclose d_stable
+	sdialog d_stable
+endif
+
+[FUNCTION f_dlg_stable_panel]
+local.x=406
+local.y=42
+ref1=<serv.list.stable_temp_<src>.<src.ctag0.stable_option>>
+ref2=<ref1.more2>
+f_custom_dialog_3 <dlocal.x>,<dlocal.y>,140,362
+dhtmlgump <eval <dlocal.x>+10> <eval <dlocal.y>+12> 120 20 0 0 <src.f_get_bfont_title><def.center><def.bfont_size7><def.h3><ref2.name>
+f_center_icon <eval <dlocal.x>+60>,<eval <dlocal.y>+46>,<ref2.dispiddec>,<ref2.color>
+
+dorigin <eval <dlocal.x>+12> <eval <dlocal.y>+60>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Slots
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><ref2.followerslots>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Damage
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><ref2.dam>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Armor
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><ref2.armor>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Karma
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><f_numformat <ref2.karma>>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Kills
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><ref2.kills>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Hits
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><f_numformat <ref2.hits>>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Strenght
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><ref2.str>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Dexterity
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><ref2.dex>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Intelligence
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><ref2.int>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Wrestling
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><fval <ref2.wrestling>>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Tactics
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><fval <ref2.tactics>>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>M.Resist
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><fval <ref2.magicresistance>>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Parrying
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><fval <ref2.parrying>>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Magery
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><fval <ref2.magery>>
+dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Taming
+dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><fval <ref2.taming>>
+local.x=546
+local.y=60
+gumppictiled <eval <dlocal.x>+5> <eval <dlocal.y>+5> 27 27 <src.f_get_gump_bg>
+if <src.ctag0.dlg_bg>==1
+checkertrans <eval <dlocal.x>+5> <eval <dlocal.y>+5> 27 27
+endif
+gumppic <eval <dlocal.x>+9> <eval <dlocal.y>+11> 22400 0
+button <dlocal.x> <dlocal.y> <def.dlg_btn1_37> 1 0 5001  		// CLAIM PET
+tooltip <def.empty_cliloc>,@Claim Pet
+
+[FUNCTION f_stable_sidebar]
+local.x=<argv[0]>
+local.y=<argv[1]>
+gumppictiled <eval <dlocal.x>+5> <eval <dlocal.y>+5> 27 27 <src.f_get_gump_bg>
+if <src.ctag0.dlg_bg>==1
+checkertrans <eval <dlocal.x>+5> <eval <dlocal.y>+5> 27 27
+endif
+gumppic <eval <dlocal.x>+8> <eval <dlocal.y>+8> <strarg <def.dlg_btn_add>> 1256		// icon
+button <dlocal.x> <dlocal.y> <def.dlg_btn1_37> 1 0 1000  		// STABLE PET
+tooltip <def.empty_cliloc>,@Stable Pet
+// local.y += 38
+
+[FUNCTION f_stable_page]
+ref1=<src.findlayer.74>
+local.count=<ref1.rescount>
+local.page_max=<eval (<dlocal.count>-1)/10>+1
+local.x=190
+local.y=100
+PAGE <argv[0]>
+if <dlocal.count> > 10
+	local.next=<qval <argv[0]>==<dlocal.page_max>?1:<eval <argv[0]>+1>>
+	local.back=<qval <argv[0]>==1?<dlocal.page_max>:<eval <argv[0]>-1>>
+	button 212 420 <def.dlg_btn_arrow_left> 0 <dlocal.back> 0		// back
+	button 327 420 <def.dlg_btn_arrow_right> 0 <dlocal.next> 0		// next
+	gumppic 273 423 <def.dlg_number_<argv[0]>> 0					// page #
+endif
+for <argv[1]> <qval <argv[2]> > <dlocal.count>?<dlocal.count>:<argv[2]>>
+	ref2=<serv.list.stable_temp_<src>.<dlocal._for>>
+	local.color=<ref2.color>
+	f_center_icon <dlocal.x>,<dlocal.y>,<ref2.dispiddec>,<dlocal.color>
+	button <eval <dlocal.x>+28> <eval <dlocal.y>-3> <def.dlg_btn1_170> 1 0 <dlocal._for>
+	tooltip 1065547,@<ref2.name>
+	if !<isempty <src.ctag.stable_option>> && <local._for>==<src.ctag0.stable_option>
+		dhtmlgump <eval <dlocal.x>+38> <eval <dlocal.y>-0> 180 20 0 0 <def.bfont_size4><def.bfont_yellow><ref2.name>
+		f_dlg_stable_panel
+	else
+		dhtmlgump <eval <dlocal.x>+38> <eval <dlocal.y>-0> 180 20 0 0 <def.bfont_size4><src.f_get_bfont1><ref2.name>
+	endif
+	local.y += 32
+endfor
+
+[FUNCTION f_stable_list]
+ref1=<src.findlayer.74>
+serv.list.stable_temp_<src>.clear
+serv.list.stable_temp_<src>.add=<src.findlayer.74>	// storage uid
+forcont <ref1> 0
+serv.list.stable_temp_<src>.add=<uid>
+endfor
+
+[DIALOG d_stable]
+150,50
+PAGE 0
+src.f_stable_list
+ref1=<src.findlayer.74>
+local.count=<ref1.rescount>
+local.page_max=<eval (<dlocal.count>-1)/10>+1	// max items per page
+local.h=<eval <dlocal.count>*32>+30
+if <dlocal.h> < 58
+    local.h=58
+elif <dlocal.count> >= 10
+    local.h=350 // max h
+endif
+f_custom_dialog_2 152,42,192,<dlocal.h>
+f_stable_sidebar 115,60
+dhtmlgump 190 54 180 20 0 0 <def.center><src.f_get_bfont_title><def.bfont_size7><def.h3>Stables
+dhtmlgump 190 71 180 20 0 0 <def.center><src.f_get_bfont_gray><def.bfont_size1><dlocal.count>/<ref1.dtag0.stable_limit> Pets
+if <dlocal.count>==0
+	dhtmlgump 190 94 180 20 0 0 <def.center><src.f_get_bfont_gray>Empty
+else
+	local.i=1
+	for 1 <dlocal.page_max>
+	f_stable_page <dlocal._for>,<dlocal.i>,<eval <dlocal._for>*10>
+	local.i += 10
+	endfor
+endif
+
+[DIALOG d_stable prebutton]
+src.dialogclose d_stable
+if <argn1>!=0 && <argn1>!=5555 && <uid>!=<src> && <distance> > 4
+	src.sysmessage @,,1 <name> is too far away.
+	serv.list.stable_temp_<src>.clear
+	src.ctag.stable_option=
+	return 1
+endif
+
+[DIALOG d_stable BUTTON]
+ON=0
+	if !<isempty <src.ctag.stable_option>>
+		local.page=<eval (<src.ctag.stable_option>/<def.stable_page_max>)+1>
+		src.ctag.stable_option=
+		sdialog d_stable <local.page>
+	else
+		serv.list.stable_temp_<src>.clear
+	endif
+	return 1
+
+ON=1 999
+	src.ctag.stable_option=<argn1>
+	local.page=<eval (<dlocal.page>-1)/10>+1
+	sdialog d_stable <local.page>
+	return 1
+
+ON=1000
+	ref1=<src.findlayer.74>
+	if <ref1.rescount> >= <ref1.dtag0.stable_limit>
+		src.sysmessage @<def.fail>,,1 Your stable is full.
+		sdialog d_stable
+		return 1
+	endif
+	src.message Select Pet
+	src.targetf f_stable
+
+on=5001	// RETRIEVE
+	ref2=<serv.list.stable_temp_<src>.<src.ctag0.stable_option>>
+	ref3=<ref2.more2>
+	// Followers check
+	local.f=<src.maxfollower>-<src.curfollower>
+	local.slots=<ref3.followerslots>
+	if <local.f> < <local.slots> //avoid to unshrink or buy more pets that free follower slots
+		src.sysmessage @<def.fail>,,1 You can't have more followers.
+		sdialog d_stable
+		return 1
+	endif
+	ref2.attr=04020
+	ref2.cont=<ref1.findlayer.layer_pack>
+	src.dclick <ref2>
+	serv.list.stable_temp_<src>.clear
+	src.ctag.stable_option=
+	return 1
+
+ON=5555
+    src.ctag0.dlg_bg += 1
+    if <src.ctag.dlg_bg>==<def.dlg_bg_max>
+        src.ctag.dlg_bg=
+    endif
+	sdialog d_stable
+	return 1
+
+[EOF]
