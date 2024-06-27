@@ -285,7 +285,7 @@ endif
 [DIALOG d_all_mounts prebutton]
 src.dialogclose d_all_mounts
 if <argn1>!=0
-    if <uid>!=<src> && <topobj>!=<src> || <isinbank>
+    if <uid>!=<src> && <distance> > 2
         src.sysmessage @,,1 You can't reach <name>.
         src.ctag.mount_cat=
         src.ctag.mount_id=
