@@ -11,12 +11,12 @@ mounts_3_id         Zostrich,c_zos_aqua,c_zos_rock,c_zos_blue,c_zos_ice,c_zos_me
 mounts_4_id         Ostard,c_ostard_forest,c_ostard_silver,c_ostard_vulcan
 mounts_5_id         Oclock,c_oclock_forest,c_oclock_frost,c_oclock_silver,c_oclock_vulcan
 mounts_6_id         Llama,c_blood_llama,c_shadow_llama,c_sky_llama,c_sun_llama,c_black_llama,c_war_llama
-mounts_7_id		    Kaos,c_steed_kaos,c_zos_kaos,c_oclock_kaos,c_llama_kaos,c_cusidhe_kaos
+mounts_7_id	    Kaos,c_steed_kaos,c_zos_kaos,c_oclock_kaos,c_llama_kaos,c_cusidhe_kaos
 mounts_8_id         Misc,c_bear_polar,c_giant_beetle,c_hiryu,c_kirin,c_reptalon,c_ridgeback,c_savage_ridgeback,c_swamp_dragon,c_unicorn
-mounts_9_id			Rare,c_eowmu,c_lasher,c_war_boar_mount,c_raptor_aqua,c_war_bear,c_bear_white,c_beetle_fire,c_boura_armoured,c_gryphon,c_gryphon_white,c_hawkstrider,c_lion,c_panda,c_talbuk,c_tawny_windrider,c_horse_undead,c_wolf_black,c_frost_wolf,c_raptor_green,c_raptor_purple
-mounts_10_id		Exotic,c_capybara_mount,c_frost_mite,c_camel,c_camaleon,c_drake_mount
-mounts_11_id		Evil,c_coconut_crab_mount,c_cu_sidhe,c_skeletal_mount,c_skeletal_cat,c_hellhound_ancient,c_tarantula,c_tiger_wild // c_serpentine_dragon_ethereal nonmover
-mounts_12_id		Dogs,c_dog_malamut,c_dog_bernard,c_dog_terier,c_dog_dane,c_dog_newfoundland,c_dog_rottweiler
+mounts_9_id	    Rare,c_eowmu,c_lasher,c_war_boar_mount,c_raptor_aqua,c_war_bear,c_bear_white,c_beetle_fire,c_boura_armoured,c_gryphon,c_gryphon_white,c_hawkstrider,c_lion,c_panda,c_talbuk,c_tawny_windrider,c_horse_undead,c_wolf_black,c_frost_wolf,c_raptor_green,c_raptor_purple
+mounts_10_id	    Exotic,c_capybara_mount,c_frost_mite,c_camel,c_camaleon,c_drake_mount
+mounts_11_id	    Evil,c_coconut_crab_mount,c_cu_sidhe,c_skeletal_mount,c_skeletal_cat,c_hellhound_ancient,c_tarantula,c_tiger_wild // c_serpentine_dragon_ethereal nonmover
+mounts_12_id	    Dogs,c_dog_malamut,c_dog_bernard,c_dog_terier,c_dog_dane,c_dog_newfoundland,c_dog_rottweiler
 
 [function f_getdefs]    // create new def lists using defs above
 local.list=1    // set list number
