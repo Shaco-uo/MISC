@@ -71,7 +71,6 @@ elif <ref2.flags>&statf_freeze
 elif <ref1.rescount> >= <ref1.dtag0.stable_limit>
 	src.sysmessage @<def.fail>,,1 Your stable is full.
 else
-	src.f_check_stablebox
 	ref2.shrink
 	ref3=<hval <ref2.actarg1>&~030000000>
 	ref3.attr=040a4
@@ -183,6 +182,7 @@ endfor
 [DIALOG d_stable]
 150,50
 PAGE 0
+src.f_check_stablebox
 src.f_stable_list
 ref1=<src.findlayer.74>
 local.count=<ref1.rescount>
