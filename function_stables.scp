@@ -87,8 +87,10 @@ ref1=<serv.list.temp_list_<src>.<src.ctag0.stable_option>>
 ref2=<ref1.more2>
 if <isempty <src.ctag.stable_info>>
 	f_custom_dialog_3 <dlocal.x>,<dlocal.y>,140,96
+	button <eval <dlocal.x>+10> <eval <dlocal.y>+65> 252 253 1 0 5002
 else
 	f_custom_dialog_3 <dlocal.x>,<dlocal.y>,140,340
+	button <eval <dlocal.x>+10> <eval <dlocal.y>+65> 250 251 1 0 5002
 	dorigin <eval <dlocal.x>+12> <eval <dlocal.y>+70>
 	dhtmlgump - *18 80 20 0 0 <def.bfont_size4><src.f_get_bfont1>Slots
 	dhtmlgump +80 - 36 20 0 0 <def.bfont_size4><src.f_get_bfont2><def.div_right><ref2.followerslots>
@@ -214,31 +216,32 @@ if <argn1>!=0 && <argn1>!=5555 && <uid>!=<src> && <distance> > 4
 	src.sysmessage @,,1 <name> is too far away.
 	serv.list.temp_list_<src>.clear
 	src.ctag.stable_option=
+	src.ctag.stable_info=
 	return 1
 endif
 
 [DIALOG d_stable BUTTON]
 ON=0
 	if !<isempty <src.ctag.stable_option>>
-		local.page=<eval (<src.ctag.stable_option>/<def.stable_page_max>)+1>
+		local.page=<eval (<src.ctag0.stable_option>-1)/10>+1
+		src.ctag.stable_info=
 		src.ctag.stable_option=
-		sdialog d_stable <local.page>
-	else
-		serv.list.temp_list_<src>.clear
+		sdialog d_stable <dlocal.page>
 	endif
 	return 1
 
 ON=1 250
 	src.ctag.stable_option=<argn1>
-	local.page=<eval (<dlocal.page>-1)/10>+1
-	sdialog d_stable <local.page>
+	local.page=<eval (<src.ctag0.stable_option>-1)/10>+1
+	sdialog d_stable <dlocal.page>
 	return 1
 
 ON=1000
 	ref1=<src.findlayer.74>
 	if <ref1.rescount> >= <ref1.dtag0.stable_limit> || <ref1.rescount> >= 250	// max container storage 255
+		local.page=<eval (<src.ctag0.stable_option>-1)/10>+1
 		src.sysmessage @<def.fail>,,1 Your stable is full.
-		sdialog d_stable
+		sdialog d_stable <dlocal.page>
 		return 1
 	endif
 	src.message Select Pet
@@ -251,8 +254,9 @@ on=5001	// RETRIEVE
 	local.f=<src.maxfollower>-<src.curfollower>
 	local.slots=<ref3.followerslots>
 	if <local.f> < <local.slots> //avoid to unshrink or buy more pets that free follower slots
+		local.page=<eval (<src.ctag0.stable_option>-1)/10>+1
 		src.sysmessage @<def.fail>,,1 You can't have more followers.
-		sdialog d_stable
+		sdialog d_stable <dlocal.page>
 		return 1
 	endif
 	ref2.attr=04020
@@ -262,12 +266,19 @@ on=5001	// RETRIEVE
 	src.ctag.stable_option=
 	return 1
 
+on=5002	// SHOW PET INFO
+	local.page=<eval (<src.ctag0.stable_option>-1)/10>+1
+	src.ctag.stable_info=<qval <isempty <src.ctag.stable_info>>?1:>
+	sdialog d_stable <dlocal.page>
+	return 1
+
 ON=5555
+	local.page=<eval (<src.ctag0.stable_option>-1)/10>+1
     src.ctag0.dlg_bg += 1
     if <src.ctag.dlg_bg>==<def.dlg_bg_max>
         src.ctag.dlg_bg=
     endif
-	sdialog d_stable
+	sdialog d_stable <dlocal.page>
 	return 1
 
 [EOF]
