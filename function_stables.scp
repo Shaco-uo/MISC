@@ -264,6 +264,7 @@ on=5001	// RETRIEVE
 	src.dclick <ref2>
 	serv.list.temp_list_<src>.clear
 	src.ctag.stable_option=
+	src.ctag.stable_info=
 	return 1
 
 on=5002	// SHOW PET INFO
